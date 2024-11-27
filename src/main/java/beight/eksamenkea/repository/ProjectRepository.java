@@ -17,4 +17,11 @@ public class ProjectRepository {
         String sql = "select * from project";
         return jdbcTemplate.queryForObject(sql, Project.ROW_MAPPER);
     }
+
+    public boolean createSubTask(String title, float estimatedHours) {
+        String sql = "insert into subtask (title, estimated_hours) values (?, ?)";
+        //jdbcTemplate.update returns int
+        //to return a boolean, > 0 is added at the end, which also makes sure that a change has been made
+        return jdbcTemplate.update(sql, title, estimatedHours) > 0;
+    }
 }
