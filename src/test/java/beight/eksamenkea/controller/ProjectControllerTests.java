@@ -44,4 +44,28 @@ public class ProjectControllerTests {
                 .andExpect(model().attribute("project", project));
     }
 
+    @Test
+    void createSubProject() throws Exception {
+        mockMvc.perform(get("/create-subproject"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("create-subproject"));
+    }
+
+    @Test
+    void saveNewSubProjectExpectFalse() throws Exception {
+        when(projectService.createSubProject("test")).thenReturn(false);
+        mockMvc.perform(post("/save-subproject")
+                        .param("title", "test"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/create-subproject"));
+    }
+
+    @Test
+    void saveNewSubProjectExpectTrue() throws Exception {
+        when(projectService.createSubProject("test")).thenReturn(true);
+        mockMvc.perform(post("/save-subproject")
+                        .param("title", "test"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"));
+    }
 }

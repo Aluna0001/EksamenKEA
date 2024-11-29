@@ -17,4 +17,9 @@ public class ProjectRepository {
         String sql = "select * from project";
         return jdbcTemplate.queryForObject(sql, Project.ROW_MAPPER);
     }
+
+    public boolean createSubProject(String title) {
+        String sql = "insert into subproject (title) values (?)";
+        return jdbcTemplate.update(sql, title) > 0;
+    }
 }
