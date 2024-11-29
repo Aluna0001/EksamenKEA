@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 
 import static org.mockito.Mockito.when;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -28,6 +27,7 @@ public class ProjectControllerTests {
 
     @MockitoBean
     private ProjectService projectService;
+
     private Project project;
 
     @BeforeEach
@@ -73,5 +73,36 @@ public class ProjectControllerTests {
                 .andExpect(redirectedUrl("/create-task")); // ret tilbage til redirect senere
     }
 
+    @Test
+    void createSubTask() throws Exception {
+        mockMvc.perform(get("/create-sub-task"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("create_sub_task"));
+    }
+
+    @Test
+    void saveNewSubTaskExpectFalse() throws Exception {
+        when(projectService.createSubTask("The sub task", 1, 1))
+                .thenReturn(false);
+        mockMvc.perform(post("/sub-task-created")
+                        .param("title", "The sub task")
+                        .param("estimated_time_hours", "1")
+                        .param("estimated_time_minutes", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/create-sub-task"));
+    }
+
+
+    @Test
+    void saveNewSubTaskExpectTrue() throws Exception {
+        when(projectService.createSubTask("The sub task", 1, 1))
+                .thenReturn(true);
+        mockMvc.perform(post("/sub-task-created")
+                        .param("title", "The sub task")
+                        .param("estimated_time_hours", "1")
+                        .param("estimated_time_minutes", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/")); //Figure out where to redirect
+    }
 }
 

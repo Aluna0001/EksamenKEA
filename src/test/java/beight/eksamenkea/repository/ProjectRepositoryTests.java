@@ -7,8 +7,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.xml.crypto.Data;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,4 +31,10 @@ public class ProjectRepositoryTests {
         assertThrows(DataIntegrityViolationException.class, () -> projectRepository.createTask(null, LocalDate.parse("2024-12-18")));
     }
 
+
+    @Test
+    void createSubTask() {
+        assertTrue(projectRepository.createSubTask("test", 1.25f)); //Success
+        assertThrows(DataIntegrityViolationException.class, () -> projectRepository.createSubTask(null, 2.25f)); //Failure
+    }
 }

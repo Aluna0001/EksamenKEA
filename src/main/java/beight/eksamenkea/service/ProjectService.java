@@ -24,4 +24,8 @@ public class ProjectService {
         return projectRepository.createTask(title, deadline);
     }
 
+    public boolean createSubTask(String title, int estimated_time_hours, int estimated_time_minutes) {
+        float estimatedHours = (estimated_time_hours+(estimated_time_minutes/60f));
+        return projectRepository.createSubTask(title, estimatedHours);
+    }
 }

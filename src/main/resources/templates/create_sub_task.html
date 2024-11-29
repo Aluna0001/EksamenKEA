@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/main.css">
+  <title>Create sub-task</title>
+</head>
+<body>
+  <h1>New sub-task</h1>
+  <form action="/sub-task-created" method="post">
+    <label>Title: <input name="title" autofocus></label><br>
+    <label>Estimated time: <input name="estimated_time_hours" type="number"> hr
+      <input name="estimated_time_minutes" type="number"> min</label>
+    <button type="submit">Save</button>
+  </form>
+  <hr>
+  <a href="/task"><button>Cancel</button></a>
+</body>
+</html>
