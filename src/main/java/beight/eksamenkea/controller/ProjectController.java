@@ -3,10 +3,9 @@ import beight.eksamenkea.service.ProjectService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Controller
 public class ProjectController {
@@ -30,8 +29,8 @@ public class ProjectController {
 
     @PostMapping("/task-created")
     public String saveNewTask(@RequestParam String title,
-                              @RequestParam Date deadline) {
-        if(projectService.createTask(title, deadline)) return "subproject";
+                              @RequestParam LocalDate deadline) {
+        if(projectService.createTask(title, deadline)) return "redirect:/";
         return "redirect:/create-task";
     }
 

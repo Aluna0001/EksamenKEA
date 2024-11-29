@@ -11,6 +11,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+
 import static org.mockito.Mockito.when;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -26,23 +28,6 @@ public class ProjectControllerTests {
 
     @MockitoBean
     private ProjectService projectService;
-
-
-    @Test
-    void createTask() throws Exception {
-        mockMvc.perform(get("create-task"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("create-task"));
-    }
-
-//    @Test
-//    void saveNewTask() throws Exception {
-//        mockMvc.perform(post("save-task"))
-//                .andExpect(status().isOk())
-//                .andExpect(view().name("save-task"));
-//
-//    }
-
     private Project project;
 
     @BeforeEach
@@ -61,4 +46,32 @@ public class ProjectControllerTests {
                 .andExpect(model().attribute("project", project));
     }
 
+    @Test
+    void createTask() throws Exception {
+        mockMvc.perform(get("/create-task"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("create_task"));
+    }
+
+    @Test
+    void saveNewTaskExpectFalse() throws Exception {
+        when(projectService.createTask("test", LocalDate.parse("2024-12-18"))).thenReturn(false);
+        mockMvc.perform(post("/task-created")
+                        .param("title", "Test")
+                        .param("deadline", "2024-12-18"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/create-task"));
+    }
+
+    @Test
+    void saveNewTaskExpectTrue() throws Exception {
+        when(projectService.createTask("test", LocalDate.parse("2024-12-18"))).thenReturn(true);
+        mockMvc.perform(post("/task-created")
+                        .param("title", "Test")
+                        .param("deadline", "2024-12-18"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/create-task")); // ret tilbage til redirect senere
+    }
+
 }
+

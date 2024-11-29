@@ -4,6 +4,7 @@ import beight.eksamenkea.model.Project;
 import beight.eksamenkea.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Service
@@ -19,7 +20,7 @@ public class ProjectService {
         return projectRepository.readProject();
     }
 
-    public boolean createTask(String title, Date deadline){
+    public boolean createTask(String title, LocalDate deadline) {
         return projectRepository.createTask(title, deadline);
     }
 

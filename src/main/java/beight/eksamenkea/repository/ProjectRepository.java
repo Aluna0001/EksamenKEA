@@ -1,10 +1,8 @@
 package beight.eksamenkea.repository;
-
 import beight.eksamenkea.model.Project;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
-import java.util.Date;
+import java.time.LocalDate;
 
 @Repository
 public class ProjectRepository {
@@ -16,8 +14,8 @@ public class ProjectRepository {
     }
 
 
-    public boolean createTask(String title, Date deadline) {
-        String sql = "INSERT INTO task (title, deadline) VALUES (?, ?) ";
+    public boolean createTask(String title, LocalDate deadline) {
+        String sql = "INSERT INTO task (title, deadline) VALUES (?, ?)";
         return jdbcTemplate.update(sql,title,deadline) > 0;
     }
 

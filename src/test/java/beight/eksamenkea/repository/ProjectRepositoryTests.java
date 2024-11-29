@@ -3,12 +3,15 @@ package beight.eksamenkea.repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import javax.xml.crypto.Data;
+import java.time.LocalDate;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -23,4 +26,11 @@ public class ProjectRepositoryTests {
     void readProject() {
         assertEquals("The project", projectRepository.readProject().getTitle());
     }
+
+    @Test
+    void createTask() {
+        assertTrue(projectRepository.createTask("test", LocalDate.parse("2024-12-18")));
+        assertThrows(DataIntegrityViolationException.class, () -> projectRepository.createTask(null, LocalDate.parse("2024-12-18")));
+    }
+
 }
