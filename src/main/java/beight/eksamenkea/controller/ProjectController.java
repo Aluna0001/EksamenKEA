@@ -1,11 +1,11 @@
 package beight.eksamenkea.controller;
-
 import beight.eksamenkea.service.ProjectService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import java.time.LocalDate;
 
 @Controller
 public class ProjectController {
@@ -21,6 +21,19 @@ public class ProjectController {
         model.addAttribute("project", projectService.getProject());
         return "project";
     }
+
+    @GetMapping("/create-task")
+    public String createTask() {
+        return "create_task";
+    }
+
+    @PostMapping("/task-created")
+    public String saveNewTask(@RequestParam String title,
+                              @RequestParam LocalDate deadline) {
+        if(projectService.createTask(title, deadline)) return "redirect:/";
+        return "redirect:/create-task";
+    }
+
 
     @GetMapping("/create-sub-task")
     public String createSubTask() {

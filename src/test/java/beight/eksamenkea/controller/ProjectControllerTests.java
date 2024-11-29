@@ -11,6 +11,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -45,6 +47,33 @@ public class ProjectControllerTests {
     }
 
     @Test
+    void createTask() throws Exception {
+        mockMvc.perform(get("/create-task"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("create_task"));
+    }
+
+    @Test
+    void saveNewTaskExpectFalse() throws Exception {
+        when(projectService.createTask("test", LocalDate.parse("2024-12-18"))).thenReturn(false);
+        mockMvc.perform(post("/task-created")
+                        .param("title", "Test")
+                        .param("deadline", "2024-12-18"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/create-task"));
+    }
+
+    @Test
+    void saveNewTaskExpectTrue() throws Exception {
+        when(projectService.createTask("test", LocalDate.parse("2024-12-18"))).thenReturn(true);
+        mockMvc.perform(post("/task-created")
+                        .param("title", "Test")
+                        .param("deadline", "2024-12-18"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/create-task")); // ret tilbage til redirect senere
+    }
+
+    @Test
     void createSubTask() throws Exception {
         mockMvc.perform(get("/create-sub-task"))
                 .andExpect(status().isOk())
@@ -63,6 +92,7 @@ public class ProjectControllerTests {
                 .andExpect(redirectedUrl("/create-sub-task"));
     }
 
+
     @Test
     void saveNewSubTaskExpectTrue() throws Exception {
         when(projectService.createSubTask("The sub task", 1, 1))
@@ -75,3 +105,4 @@ public class ProjectControllerTests {
                 .andExpect(redirectedUrl("/")); //Figure out where to redirect
     }
 }
+
