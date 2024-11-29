@@ -19,7 +19,7 @@ public class ProjectRepository {
     }
 
     public boolean createSubTask(String title, float estimatedHours) {
-        String sql = "insert into subtask (title, estimated_hours) values (?, ?)";
+        String sql = "INSERT INTO subtask (title, estimated_hours) VALUES (?, ?)";
         //jdbcTemplate.update returns int
         //to return a boolean, > 0 is added at the end, which also makes sure that a change has been made
         return jdbcTemplate.update(sql, title, estimatedHours) > 0;
