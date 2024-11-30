@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/main.css">
+    <title>Create Task</title>
+</head>
+<body>
+<h1>New Task</h1>
+<form action="/task-created" method="post">
+    <label>Title: <input name="title" autofocus></label><br>
+    <label>Deadline: <input name="deadline" type="date"></label>
+    <button type="submit">Save</button>
+</form>
+<hr>
+<a href="/subproject"><button>Cancel</button></a>
+</body>
+</html>
