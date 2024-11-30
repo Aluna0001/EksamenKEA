@@ -22,6 +22,17 @@ public class ProjectController {
         return "project";
     }
 
+    @GetMapping("/create-subproject")
+    public String createSubProject() {
+        return "create-subproject";
+    }
+
+    @PostMapping("/save-subproject")
+    public String saveNewSubProject(@RequestParam String title) {
+        if (projectService.createSubProject(title)) return "redirect:/";
+        return "redirect:/create-subproject";
+    }
+
     @GetMapping("/create-task")
     public String createTask() {
         return "create_task";
@@ -49,3 +60,4 @@ public class ProjectController {
     }
 
 }
+

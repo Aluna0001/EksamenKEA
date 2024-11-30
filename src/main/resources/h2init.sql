@@ -6,7 +6,7 @@ CREATE TABLE project(
 CREATE TABLE subproject(
     subproject_id INT PRIMARY KEY AUTO_INCREMENT,
     title VARCHAR(20) NOT NULL,
-    project_id INT NOT NULL,
+    project_id INT,
     FOREIGN KEY(project_id) REFERENCES project(project_id) ON DELETE CASCADE
 );
 

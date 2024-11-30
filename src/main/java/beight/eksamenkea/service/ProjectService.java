@@ -20,6 +20,10 @@ public class ProjectService {
         return projectRepository.readProject();
     }
 
+    public boolean createSubProject(String title) {
+        return projectRepository.createSubProject(title);
+    }
+
     public boolean createTask(String title, LocalDate deadline) {
         return projectRepository.createTask(title, deadline);
     }

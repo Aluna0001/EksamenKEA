@@ -24,6 +24,11 @@ public class ProjectRepository {
         return jdbcTemplate.queryForObject(sql, Project.ROW_MAPPER);
     }
 
+    public boolean createSubProject(String title) {
+        String sql = "insert into subproject (title) values (?)";
+        return jdbcTemplate.update(sql, title) > 0;
+    }
+
     public boolean createSubTask(String title, float estimatedHours) {
         String sql = "INSERT INTO subtask (title, estimated_hours) VALUES (?, ?)";
         //jdbcTemplate.update returns int
