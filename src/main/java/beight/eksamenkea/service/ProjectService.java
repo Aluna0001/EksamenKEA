@@ -1,11 +1,11 @@
 package beight.eksamenkea.service;
 
 import beight.eksamenkea.model.Project;
+import beight.eksamenkea.model.Subproject;
 import beight.eksamenkea.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Service
 public class ProjectService {
@@ -16,12 +16,16 @@ public class ProjectService {
         this.projectRepository = projectRepository;
     }
 
-    public Project getProject() {
-        return projectRepository.readProject();
+    public Project getProject(int projectID) {
+        return projectRepository.readProject(projectID);
     }
 
-    public boolean createSubProject(String title) {
-        return projectRepository.createSubProject(title);
+    public Subproject getSubproject(int subprojectID) {
+        return projectRepository.readSubproject(subprojectID);
+    }
+
+    public boolean createSubproject(int projectID, String title) {
+        return projectRepository.createSubproject(projectID, title);
     }
 
     public boolean createTask(String title, LocalDate deadline) {

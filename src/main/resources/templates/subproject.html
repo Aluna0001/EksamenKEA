@@ -1,11 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Subproject</title>
 </head>
 <body>
-<a href="/create_task"><button>Create Task</button></a>
+
+<h1 th:text="${subproject.title}"></h1>
+<h2>Subproject</h2>
+<p th:text="'Estimated time: ' + ${subproject.totalEstimatedHours} + ' hours.'"></p>
+<table>
+    <tr>
+        <th>Tasks</th>
+        <th>Deadline</th>
+        <th>Estimated time</th>
+    </tr>
+    <tr th:each="task : ${subproject.tasks}">
+        <td><a th:href="@{'/task/' + ${task.taskID}}" th:text="${task.title}"></a></td>
+        <td th:text="${task.deadline}"></td>
+        <td th:text="${task.totalEstimatedHours} + ' hours'"></td>
+    </tr>
+</table>
+<a th:href="@{'/subproject/' + ${subproject.subprojectID} + '/create-task'}"><button>New task</button></a>
+<a href="/"><button>Return to project</button></a>
 
 </body>
 </html>

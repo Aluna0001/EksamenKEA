@@ -1,8 +1,10 @@
 package beight.eksamenkea.controller;
+
 import beight.eksamenkea.service.ProjectService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.time.LocalDate;
@@ -18,19 +20,26 @@ public class ProjectController {
 
     @GetMapping("/")
     public String viewFrontpage(Model model) {
-        model.addAttribute("project", projectService.getProject());
+        model.addAttribute("project", projectService.getProject(1));
         return "project";
     }
 
-    @GetMapping("/create-subproject")
-    public String createSubProject() {
+    @GetMapping("/subproject/{id}")
+    public String viewSubproject(@PathVariable int id, Model model) {
+        model.addAttribute("subproject", projectService.getSubproject(id));
+        return "subproject";
+    }
+
+    @GetMapping("/project/{id}/create-subproject")
+    public String createSubproject(@PathVariable int id, Model model) {
+        model.addAttribute("projectID", id);
         return "create-subproject";
     }
 
-    @PostMapping("/save-subproject")
-    public String saveNewSubProject(@RequestParam String title) {
-        if (projectService.createSubProject(title)) return "redirect:/";
-        return "redirect:/create-subproject";
+    @PostMapping("/subproject-created")
+    public String saveNewSubproject(@RequestParam int id, @RequestParam String title) {
+        if (projectService.createSubproject(id, title)) return "redirect:/";
+        return "redirect:/project/" + id + "/create-subproject";
     }
 
     @GetMapping("/create-task")
