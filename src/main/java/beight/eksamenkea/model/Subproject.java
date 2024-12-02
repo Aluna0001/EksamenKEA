@@ -1,29 +1,50 @@
 package beight.eksamenkea.model;
 
+import org.springframework.jdbc.core.RowMapper;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Subproject {
-    private String subprojectName;
-    private String subprojectDescription;
-    private float subprojectEstimatedTime;
 
-    public Subproject(String subprojectName, String subprojectDescription, float subprojectEstimatedTime) {
-        this.subprojectName = subprojectName;
-        this.subprojectDescription = subprojectDescription;
-        this.subprojectEstimatedTime = subprojectEstimatedTime;
+    private final int projectID;
+    private final int subprojectID;
+    private final String title;
+    private final List<Task> tasks;
+
+    public static RowMapper<Subproject> ROW_MAPPER = (rs, rowNum) ->
+            new Subproject(rs.getInt("subproject.project_id"),
+                    rs.getInt("subproject.subproject_id"),
+                    rs.getString("subproject.title"));
+
+    public Subproject(int projectID, int subprojectID, String title) {
+        this.projectID = projectID;
+        this.subprojectID = subprojectID;
+        this.title = title;
+        this.tasks = new ArrayList<>();
     }
 
-    public String getSubprojectName() {
-        return subprojectName;
+    public float getTotalEstimatedHours() {
+        float sum = 0;
+        for (Task task : tasks) {
+            sum += task.getTotalEstimatedHours();
+        }
+        return sum;
     }
-    public void setSubprojectName(String subprojectName) {
-        this.subprojectName = subprojectName;
+
+    public int getProjectID() {
+        return projectID;
     }
-    public String getSubprojectDescription() {
-        return subprojectDescription;
+
+    public int getSubprojectID() {
+        return subprojectID;
     }
-    public void setSubprojectDescription(String subprojectDescription) {
-        this.subprojectDescription = subprojectDescription;
+
+    public String getTitle() {
+        return title;
     }
-    public float getSubprojectEstimatedTime() {
-        return subprojectEstimatedTime;
+
+    public List<Task> getTasks() {
+        return tasks;
     }
 }

@@ -3,30 +3,57 @@ package beight.eksamenkea.model;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Task {
 
-    private String title;
-    private Date deadline;
-
-
+    private final int subprojectID;
+    private final int taskID;
+    private final String title;
+    private final LocalDateTime deadline;
+    private final List<Subtask> subtasks;
 
     public static RowMapper<Task> ROW_MAPPER =(ResultSet rs, int rowNum) ->
-        new Task(rs.getString("title"),
-            rs.getDate("deadline"));
+        new Task(rs.getInt("task.subproject_id"),
+                rs.getInt("task.task_id"),
+                rs.getString("task.title"),
+                rs.getTimestamp("task.deadline").toLocalDateTime());
 
-
-    public Task(String title, Date deadline) {
+    public Task(int subprojectID, int taskID, String title, LocalDateTime deadline) {
+        this.subprojectID = subprojectID;
+        this.taskID = taskID;
         this.title = title;
         this.deadline = deadline;
+        this.subtasks = new ArrayList<>();
+    }
+
+    public float getTotalEstimatedHours() {
+        float sum = 0;
+        for (Subtask subtask : subtasks) {
+            sum += subtask.getEstimatedHours();
+        }
+        return sum;
+    }
+
+    public int getSubprojectID() {
+        return subprojectID;
+    }
+
+    public int getTaskID() {
+        return taskID;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public Date getDeadline() {
+    public LocalDateTime getDeadline() {
         return deadline;
+    }
+
+    public List<Subtask> getSubtasks() {
+        return subtasks;
     }
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="da" xmlns:th="http://thymeleaf.org">
+<html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Project</title>
@@ -7,6 +7,19 @@
 <body>
 
 <h1 th:text="${project.title}"></h1>
+<h2>Project</h2>
+<p th:text="'Estimated time: ' + ${project.totalEstimatedHours} + ' hours.'"></p>
+<table>
+    <tr>
+        <th>Subprojects</th>
+        <th>Estimated time</th>
+    </tr>
+    <tr th:each="subproject : ${project.subprojects}">
+        <td><a th:href="@{'/subproject/' + ${subproject.subprojectID}}" th:text="${subproject.title}"></a></td>
+        <td th:text="${subproject.totalEstimatedHours} + ' hours'"></td>
+    </tr>
+</table>
+<a th:href="@{'/project/' + ${project.projectID} + '/create-subproject'}"><button>New subproject</button></a>
 
 </body>
 </html>

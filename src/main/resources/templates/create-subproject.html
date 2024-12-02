@@ -1,15 +1,19 @@
 <!DOCTYPE html>
-<html lang="da" xmlns:th="http://thymeleaf.org">
+<html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/main.css">
     <title>Create subproject</title>
 </head>
 <body>
+
 <h1>Create subproject</h1>
-<form action="/save-subproject" method="post">
+<form action="/subproject-created" method="post">
+    <input type="hidden" name="id" th:value="${projectID}">
     <label>Title: <input name="title" autofocus></label><br>
-    <button type="submit">Save Subproject</button>
+    <button type="submit">Save new subproject</button>
 </form>
+<a href="/"><button>Return to project</button></a>
+
 </body>
 </html>
