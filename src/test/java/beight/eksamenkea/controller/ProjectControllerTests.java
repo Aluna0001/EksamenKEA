@@ -1,6 +1,7 @@
 package beight.eksamenkea.controller;
 
 import beight.eksamenkea.model.Project;
+import beight.eksamenkea.model.Subproject;
 import beight.eksamenkea.service.ProjectService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,16 +30,17 @@ public class ProjectControllerTests {
     private ProjectService projectService;
 
     private Project project;
+    private Subproject subproject;
 
     @BeforeEach
     void setUp() {
-        project = new Project("The project");
+        project = new Project(1, "The project");
+        subproject = new Subproject(1, 1, "The subproject");
     }
 
     @Test
     void viewFrontpage() throws Exception {
-        when(projectService.getProject()).thenReturn(project);
-
+        when(projectService.getProject(1)).thenReturn(project);
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("project"))
@@ -47,25 +49,37 @@ public class ProjectControllerTests {
     }
 
     @Test
-    void createSubProject() throws Exception {
-        mockMvc.perform(get("/create-subproject"))
+    void viewSubproject() throws Exception {
+        when(projectService.getSubproject(1)).thenReturn(subproject);
+        mockMvc.perform(get("/subproject/1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("subproject"))
+                .andExpect(model().attributeExists("subproject"))
+                .andExpect(model().attribute("subproject", subproject));
+    }
+
+    @Test
+    void createSubproject() throws Exception {
+        mockMvc.perform(get("/project/1/create-subproject"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("create-subproject"));
     }
 
     @Test
-    void saveNewSubProjectExpectFalse() throws Exception {
-        when(projectService.createSubProject("test")).thenReturn(false);
-        mockMvc.perform(post("/save-subproject")
+    void saveNewSubprojectExpectFalse() throws Exception {
+        when(projectService.createSubproject(1, "test")).thenReturn(false);
+        mockMvc.perform(post("/subproject-created")
+                        .param("id", "1")
                         .param("title", "test"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/create-subproject"));
+                .andExpect(redirectedUrl("/project/1/create-subproject"));
     }
 
     @Test
-    void saveNewSubProjectExpectTrue() throws Exception {
-        when(projectService.createSubProject("test")).thenReturn(true);
-        mockMvc.perform(post("/save-subproject")
+    void saveNewSubprojectExpectTrue() throws Exception {
+        when(projectService.createSubproject(1, "test")).thenReturn(true);
+        mockMvc.perform(post("/subproject-created")
+                        .param("id", "1")
                         .param("title", "test"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));
