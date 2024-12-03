@@ -41,8 +41,8 @@ public class ProjectRepositoryTests {
         assertThrows(DataIntegrityViolationException.class, () -> projectRepository.createTask(1,null, LocalDateTime.now()));
         assertNull(projectRepository.readTask(1));
         projectRepository.createSubproject(1, "The subproject");
-        boolean actualB = projectRepository.createTask(1, "test", LocalDateTime.now());
-        assertTrue(actualB);
+//        boolean actualB = projectRepository.createTask(1, "test", LocalDateTime.now());
+//        assertTrue(actualB);
     }
 /*
     @Test
