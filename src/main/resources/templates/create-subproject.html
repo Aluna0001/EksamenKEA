@@ -13,7 +13,7 @@
     <label>Title: <input name="title" autofocus></label><br>
     <button type="submit">Save new subproject</button>
 </form>
-<a href="/"><button>Return to project</button></a>
+<a th:href="@{'/project/' + ${projectID}}"><button>Return to project</button></a>
 
 </body>
 </html>

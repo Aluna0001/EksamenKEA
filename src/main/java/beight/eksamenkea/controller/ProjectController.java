@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 
 @Controller
@@ -20,8 +20,13 @@ public class ProjectController {
     }
 
     @GetMapping("/")
-    public String viewFrontpage(Model model) {
-        model.addAttribute("project", projectService.getProject(1));
+    public String viewFrontpage() {
+        return "redirect:/project/1";
+    }
+
+    @GetMapping("/project/{id}")
+    public String viewProject(@PathVariable int id, Model model) {
+        model.addAttribute("project", projectService.getProject(id));
         return "project";
     }
 
@@ -75,6 +80,20 @@ public class ProjectController {
     public String readTask(@PathVariable int task_id, Model model){
         model.addAttribute("task", projectService.getTask(task_id));
        return "task";
+    }
+
+    @GetMapping("/{type}/{id}/change-title")
+    public String changeTitle(@PathVariable String type, @PathVariable int id, Model model) {
+        model.addAttribute("type", type);
+        model.addAttribute("id", id);
+        model.addAttribute("title", projectService.getTitle(type, id));
+        return "update_title";
+    }
+
+    @PostMapping("/title-changed")
+    public String saveTitle(@RequestParam String type, @RequestParam int id, @RequestParam String title) {
+        if (projectService.updateTitle(type, id, title)) return "redirect:/" + type + "/" + id;
+        return "redirect:/" + type + "/" + id + "/change-title";
     }
 
 }
