@@ -27,3 +27,6 @@ CREATE TABLE subtask(
 );
 
 INSERT INTO project (title) VALUES ('The project');
+INSERT INTO subproject (project_id, title) VALUES (1, 'The subproject');
+INSERT INTO task (subproject_id, title, deadline) VALUES (1, 'The task', NOW());
+INSERT INTO subtask (task_id, title, estimated_hours) VALUES (1, 'The subtask', 3);

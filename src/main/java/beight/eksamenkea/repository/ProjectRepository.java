@@ -1,4 +1,5 @@
 package beight.eksamenkea.repository;
+
 import beight.eksamenkea.model.Project;
 import beight.eksamenkea.model.Subproject;
 import beight.eksamenkea.model.Subtask;
@@ -8,13 +9,13 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public class ProjectRepository {
 
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     public ProjectRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -143,4 +144,17 @@ public class ProjectRepository {
         };
         return jdbcTemplate.query(sql, resultSetExtractor, task_id);
     }
+
+    public String readTitle(String type, int id) {
+        if (!List.of("project", "subproject", "task", "subtask").contains(type)) return null;
+        String sql = "SELECT title FROM " + type + " WHERE " + type + "_id = ?";
+        return jdbcTemplate.queryForObject(sql, String.class, id);
+    }
+
+    public boolean updateTitle(String type, int id, String title) {
+        if (!List.of("project", "subproject", "task", "subtask").contains(type)) return false;
+        String sql = "UPDATE " + type + " SET title = ? WHERE " + type + "_id = ?";
+        return jdbcTemplate.update(sql, title, id) > 0;
+    }
+
 }
