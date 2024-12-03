@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Controller
 public class ProjectController {
@@ -42,16 +43,18 @@ public class ProjectController {
         return "redirect:/project/" + id + "/create-subproject";
     }
 
-    @GetMapping("/create-task")
-    public String createTask() {
+    @GetMapping("/subproject/{id}/create-task")
+    public String createTask(@PathVariable int id, Model model) {
+        model.addAttribute("subprojectID", id);
         return "create_task";
     }
 
     @PostMapping("/task-created")
-    public String saveNewTask(@RequestParam String title,
-                              @RequestParam LocalDate deadline) {
-        if(projectService.createTask(title, deadline)) return "redirect:/";
-        return "redirect:/create-task";
+    public String saveNewTask(@RequestParam int id,
+                              @RequestParam String title,
+                              @RequestParam LocalDateTime deadline) {
+        if(projectService.createTask(id, title, deadline)) return "redirect:/subproject/" + id;
+        return "redirect:/subproject/" + id + "/create-task";
     }
 
 
@@ -66,6 +69,12 @@ public class ProjectController {
                                  @RequestParam(defaultValue = "0") int estimated_time_minutes) {
         if (projectService.createSubTask(title, estimated_time_hours, estimated_time_minutes)) return "redirect:/";
         return "redirect:/create-sub-task";
+    }
+
+    @GetMapping("/task/{task_id}")
+    public String readTask(@PathVariable int task_id, Model model){
+        model.addAttribute("task", projectService.getTask(task_id));
+       return "task";
     }
 
 }

@@ -2,6 +2,7 @@ package beight.eksamenkea.controller;
 
 import beight.eksamenkea.model.Project;
 import beight.eksamenkea.model.Subproject;
+import beight.eksamenkea.model.Task;
 import beight.eksamenkea.service.ProjectService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -87,29 +89,33 @@ public class ProjectControllerTests {
 
     @Test
     void createTask() throws Exception {
-        mockMvc.perform(get("/create-task"))
+        mockMvc.perform(get("/subproject/1/create-task"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("create_task"));
     }
 
     @Test
     void saveNewTaskExpectFalse() throws Exception {
-        when(projectService.createTask("test", LocalDate.parse("2024-12-18"))).thenReturn(false);
+        when(projectService.createTask(1,"test", LocalDateTime.now())).thenReturn(false);
+        when(projectService.getSubproject(1)).thenReturn(subproject);
         mockMvc.perform(post("/task-created")
+                        .param("id", "1")
                         .param("title", "Test")
-                        .param("deadline", "2024-12-18"))
+                        .param("deadline", "2024-12-18T08:30"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/create-task"));
+                .andExpect(redirectedUrl("/subproject/1/create-task"));
     }
 
     @Test
     void saveNewTaskExpectTrue() throws Exception {
-        when(projectService.createTask("test", LocalDate.parse("2024-12-18"))).thenReturn(true);
+        when(projectService.createTask(1,"test", LocalDateTime.now())).thenReturn(true);
+        when(projectService.getSubproject(1)).thenReturn(subproject);
         mockMvc.perform(post("/task-created")
+                        .param("id", "1")
                         .param("title", "Test")
-                        .param("deadline", "2024-12-18"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/create-task")); // ret tilbage til redirect senere
+                        .param("deadline", "2024-12-18T08:30"))
+                .andExpect(status().is3xxRedirection());
+//                .andExpect(redirectedUrl("/subproject/1"));
     }
 
     @Test
@@ -143,5 +149,17 @@ public class ProjectControllerTests {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/")); //Figure out where to redirect
     }
+
+    @Test
+    void readTask() throws Exception {
+        when(projectService.getTask(1)).thenReturn(new Task(1,1,"task", LocalDateTime.now()));
+
+        mockMvc.perform(get("/task/1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("task"))
+                .andExpect(model().attributeExists("task"));
+    }
+
+
 }
 

@@ -8,6 +8,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -34,13 +35,16 @@ public class ProjectRepositoryTests {
         assertTrue(actualB);
         //assertEquals("The subproject", actualS);
     }
-/*
-    @Test
-    void createTask() {
-        assertTrue(projectRepository.createTask("test", LocalDate.parse("2024-12-18")));
-        assertThrows(DataIntegrityViolationException.class, () -> projectRepository.createTask(null, LocalDate.parse("2024-12-18")));
-    }
 
+    @Test
+    void createAndReadTask() {
+        assertThrows(DataIntegrityViolationException.class, () -> projectRepository.createTask(1,null, LocalDateTime.now()));
+        assertNull(projectRepository.readTask(1));
+        projectRepository.createSubproject(1, "The subproject");
+//        boolean actualB = projectRepository.createTask(1, "test", LocalDateTime.now());
+//        assertTrue(actualB);
+    }
+/*
     @Test
     void createSubTask() {
         assertTrue(projectRepository.createSubTask("test", 1.25f)); //Success
