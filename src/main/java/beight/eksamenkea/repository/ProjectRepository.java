@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Repository
 public class ProjectRepository {
@@ -20,9 +21,9 @@ public class ProjectRepository {
     }
 
 
-    public boolean createTask(String title, LocalDate deadline) {
-        String sql = "INSERT INTO task (title, deadline) VALUES (?, ?)";
-        return jdbcTemplate.update(sql,title,deadline) > 0;
+    public boolean createTask(int subproject_id, String title, LocalDateTime deadline) {
+        String sql = "INSERT INTO task (subproject_id, title, deadline) VALUES (?, ?, ?)";
+        return jdbcTemplate.update(sql,subproject_id, title,deadline) > 0;
     }
 
     public Project readProject(int projectID) {
@@ -116,5 +117,30 @@ public class ProjectRepository {
         //jdbcTemplate.update returns int
         //to return a boolean, > 0 is added at the end, which also makes sure that a change has been made
         return jdbcTemplate.update(sql, title, estimatedHours) > 0;
+    }
+
+    public Task readTask(int task_id) {
+        String sql = """
+                SELECT
+                    *
+                FROM
+                    task
+                LEFT JOIN
+                    subtask ON task.task_id = subtask.task_id
+                WHERE
+                    task.task_id = ?""";
+        ResultSetExtractor<Task> resultSetExtractor = (ResultSet rs) -> {
+            Task task = null;
+            while (rs.next()) {
+                if (task == null) {
+                    task = Task.ROW_MAPPER.mapRow(rs, 1);
+                }
+                if (rs.getInt("subtask.subtask_id") != 0) {
+                    task.getSubtasks().add(Subtask.ROW_MAPPER.mapRow(rs, 1));
+                }
+            }
+            return task;
+        };
+        return jdbcTemplate.query(sql, resultSetExtractor, task_id);
     }
 }

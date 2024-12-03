@@ -5,7 +5,20 @@
     <title>Task</title>
 </head>
 <body>
-  <a href="/create_sub_task"><button>Create sub-task</button></a>
+    <h1>Task Details</h1>
+    <h2 th:text="${task.title}"></h2>
+    <p>Deadline: <span th:text="${task.deadline}"></span></p>
+
+    <h3>Subtasks</h3>
+    <ul>
+        <li th:each="subtask : ${task.subtasks}">
+            <span th:text="${subtask.title}"></span> -
+            <span th:text="${subtask.estimatedHours}"></span>
+        </li>
+    </ul>
+    <a th:href="@{'/task/' + ${task_id} + '/create-sub-task'}">
+      <button>Create sub-task</button>
+  </a>
 
 </body>
 </html>

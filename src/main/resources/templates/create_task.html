@@ -8,11 +8,12 @@
 <body>
 <h1>New Task</h1>
 <form action="/task-created" method="post">
+    <input type="hidden" name="id" th:value="${subprojectID}">
     <label>Title: <input name="title" autofocus></label><br>
-    <label>Deadline: <input name="deadline" type="date"></label>
+    <label>Deadline: <input name="deadline" type="datetime-local"></label>
     <button type="submit">Save</button>
 </form>
 <hr>
-<a href="/subproject"><button>Cancel</button></a>
+<a th:href="@{'/subproject/' + ${subproject}}"><button>Cancel</button></a>
 </body>
 </html>
