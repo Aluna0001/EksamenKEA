@@ -113,11 +113,11 @@ public class ProjectRepository {
         return jdbcTemplate.update(sql, projectID, title) > 0;
     }
 
-    public boolean createSubTask(String title, float estimatedHours) {
-        String sql = "INSERT INTO subtask (title, estimated_hours) VALUES (?, ?)";
+    public boolean createSubtask(int taskID, String title, float estimatedHours) {
+        String sql = "INSERT INTO subtask (task_id, title, estimated_hours) VALUES (?, ?, ?)";
         //jdbcTemplate.update returns int
         //to return a boolean, > 0 is added at the end, which also makes sure that a change has been made
-        return jdbcTemplate.update(sql, title, estimatedHours) > 0;
+        return jdbcTemplate.update(sql, taskID, title, estimatedHours) > 0;
     }
 
     public Task readTask(int task_id) {
@@ -157,4 +157,9 @@ public class ProjectRepository {
         return jdbcTemplate.update(sql, title, id) > 0;
     }
 
+
+    public Subtask readSubtask(int subtaskID) {
+        String sql = "SELECT * FROM subtask WHERE subtask_id = ?";
+        return jdbcTemplate.queryForObject(sql,Subtask.ROW_MAPPER,subtaskID);
+    }
 }

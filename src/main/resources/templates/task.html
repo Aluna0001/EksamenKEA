@@ -12,12 +12,12 @@
     <h3>Subtasks</h3>
     <ul>
         <li th:each="subtask : ${task.subtasks}">
-            <span th:text="${subtask.title}"></span> -
+            <a th:href="@{'/subtask/' + ${subtask.subtaskID}}" th:text="${subtask.title}"></a> -
             <span th:text="${subtask.estimatedHours}"></span>
         </li>
     </ul>
-    <a th:href="@{'/task/' + ${task_id} + '/create-sub-task'}">
-      <button>Create sub-task</button>
+    <a th:href="@{'/task/' + ${task_id} + '/create-subtask'}">
+      <button>Create subtask</button>
   </a>
 
 </body>
