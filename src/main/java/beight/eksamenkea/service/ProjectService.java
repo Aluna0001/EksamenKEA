@@ -49,4 +49,8 @@ public class ProjectService {
         return projectRepository.updateTitle(type, id, title);
     }
 
+
+    public Subproject editSubProject(String subprojectName, String subprojectDescription, float subprojectEstimatedTime) {
+        return projectRepository.editSubProject(subprojectName, subprojectDescription, subprojectEstimatedTime);
+    }
 }

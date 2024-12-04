@@ -71,7 +71,7 @@ public class ProjectControllerTests {
     void createSubproject() throws Exception {
         mockMvc.perform(get("/project/1/create-subproject"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("create-subproject"));
+                .andExpect(view().name("create_subproject"));
     }
 
     @Test
