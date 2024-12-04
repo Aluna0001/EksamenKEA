@@ -29,8 +29,16 @@ public class ProjectService {
         return projectRepository.createSubproject(projectID, title);
     }
 
-    public boolean createTask(int subproject_id, String title, LocalDateTime deadline) {
-        return projectRepository.createTask(subproject_id, title, deadline);
+    public boolean createTask(int subprojectID, String title, LocalDateTime deadline) {
+        return projectRepository.createTask(subprojectID, title, deadline);
+    }
+
+    public Task getTask(int task_id){
+        return projectRepository.readTask(task_id);
+    }
+
+    public boolean updateTask(int taskID, String title, LocalDateTime deadline) {
+        return projectRepository.updateTask(taskID,title,deadline);
     }
 
     public boolean createSubTask(int taskID, String title, int estimated_time_hours, int estimated_time_minutes) {
@@ -38,8 +46,11 @@ public class ProjectService {
         return projectRepository.createSubtask(taskID, title, estimatedHours);
     }
 
-    public Task getTask(int task_id){
-        return projectRepository.readTask(task_id);
+    public boolean deleteTask(int taskID, String confirm) {
+        if(confirm.equals("on")){
+            return projectRepository.deleteTask(taskID);
+        }
+        return false;
     }
 
     public String getTitle(String type, int id) {

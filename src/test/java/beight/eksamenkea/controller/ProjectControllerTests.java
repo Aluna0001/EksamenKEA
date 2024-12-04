@@ -210,6 +210,35 @@ public class ProjectControllerTests {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/project/1/change-title"));
     }
+    @Test
+    void updateTask() throws Exception {
+        when(projectService.getTask(1)).thenReturn(new Task(1,1,"title",LocalDateTime.now()));
+
+        mockMvc.perform(get("/subproject/1/update-task/1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("update_task"))
+                .andExpect(model().attributeExists("task"));
+    }
+
+    @Test
+    void taskUpdated() throws Exception {
+        when(projectService.updateTask(1, "title", LocalDateTime.now())).thenReturn(true);
+
+        mockMvc.perform(post("/subproject/1/update-task/1")
+                        .param("title","test")
+                        .param("deadline","2024-12-18T08:30"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/subproject/1/update-task/1"));
+    }
+
+    @Test
+    void deleteTask() throws Exception {
+        when(projectService.deleteTask(1,"confirm")).thenReturn(true);
+
+        mockMvc.perform(post("/subproject/1/delete-task/1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/update-task"));
+    }
 
 }
 
