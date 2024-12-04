@@ -3,6 +3,7 @@ package beight.eksamenkea.service;
 import beight.eksamenkea.model.Project;
 import beight.eksamenkea.model.Subproject;
 import beight.eksamenkea.model.Task;
+import beight.eksamenkea.model.Subtask;
 import beight.eksamenkea.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -28,17 +29,32 @@ public class ProjectService {
         return projectRepository.createSubproject(projectID, title);
     }
 
-    public boolean createTask(int subproject_id, String title, LocalDateTime deadline) {
-        return projectRepository.createTask(subproject_id, title, deadline);
-    }
-
-    public boolean createSubTask(String title, int estimated_time_hours, int estimated_time_minutes) {
-        float estimatedHours = (estimated_time_hours+(estimated_time_minutes/60f));
-        return projectRepository.createSubTask(title, estimatedHours);
+    public boolean createTask(int subprojectID, String title, LocalDateTime deadline) {
+        return projectRepository.createTask(subprojectID, title, deadline);
     }
 
     public Task getTask(int task_id){
         return projectRepository.readTask(task_id);
+    }
+
+    public boolean updateTask(int taskID, String title, LocalDateTime deadline) {
+        return projectRepository.updateTask(taskID,title,deadline);
+    }
+
+    public boolean updateSubTask(int taskID, String title, float estimatedHours) {
+        return projectRepository.updateSubTask(taskID,title,estimatedHours);
+    }
+
+    public boolean createSubTask(int taskID, String title, int estimated_time_hours, int estimated_time_minutes) {
+        float estimatedHours = (estimated_time_hours+(estimated_time_minutes/60f));
+        return projectRepository.createSubtask(taskID, title, estimatedHours);
+    }
+
+    public boolean deleteTask(int taskID, String confirm) {
+        if(confirm.equals("on")){
+            return projectRepository.deleteTask(taskID);
+        }
+        return false;
     }
 
     public String getTitle(String type, int id) {
@@ -53,4 +69,16 @@ public class ProjectService {
     public Subproject editSubProject(String subprojectName, String subprojectDescription, float subprojectEstimatedTime) {
         return projectRepository.editSubProject(subprojectName, subprojectDescription, subprojectEstimatedTime);
     }
+
+    public Subtask getSubtask(int subtaskId) {
+        return projectRepository.readSubtask(subtaskId);
+    }
+
+    public boolean deleteSubTask(int subtaskID, String confirm) {
+        if(confirm.equals("on")){
+            return projectRepository.deleteSubTask(subtaskID);
+        }
+        return false;
+    }
+
 }

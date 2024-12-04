@@ -23,9 +23,9 @@ public class ProjectRepository {
     }
 
 
-    public boolean createTask(int subproject_id, String title, LocalDateTime deadline) {
+    public boolean createTask(int subprojectID, String title, LocalDateTime deadline) {
         String sql = "INSERT INTO task (subproject_id, title, deadline) VALUES (?, ?, ?)";
-        return jdbcTemplate.update(sql,subproject_id, title,deadline) > 0;
+        return jdbcTemplate.update(sql,subprojectID, title,deadline) > 0;
     }
 
     public Project readProject(int projectID) {
@@ -114,11 +114,11 @@ public class ProjectRepository {
         return jdbcTemplate.update(sql, projectID, title) > 0;
     }
 
-    public boolean createSubTask(String title, float estimatedHours) {
-        String sql = "INSERT INTO subtask (title, estimated_hours) VALUES (?, ?)";
+    public boolean createSubtask(int taskID, String title, float estimatedHours) {
+        String sql = "INSERT INTO subtask (task_id, title, estimated_hours) VALUES (?, ?, ?)";
         //jdbcTemplate.update returns int
         //to return a boolean, > 0 is added at the end, which also makes sure that a change has been made
-        return jdbcTemplate.update(sql, title, estimatedHours) > 0;
+        return jdbcTemplate.update(sql, taskID, title, estimatedHours) > 0;
     }
 
     public Task readTask(int task_id) {
@@ -162,5 +162,34 @@ public class ProjectRepository {
     public Subproject editSubProject(String subprojectName, String subprojectDescription, float subprojectEstimatedTime) {
         //MissingCode ROWMAPPER
         return null;
+    }
+
+    public Subtask readSubtask(int subtaskID) {
+        String sql = "SELECT * FROM subtask WHERE subtask_id = ?";
+        return jdbcTemplate.queryForObject(sql,Subtask.ROW_MAPPER,subtaskID);
+    }
+
+    public boolean updateTask(int taskID, String title, LocalDateTime deadline) {
+        String sql = "UPDATE task SET title = ?, deadline = ? WHERE task_id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, title, deadline, taskID);
+        return rowsAffected > 0;
+    }
+
+    public boolean deleteTask(int taskID) {
+        String sql ="DELETE FROM task WHERE task_id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, taskID);
+        return rowsAffected > 0;
+    }
+
+    public boolean updateSubTask(int taskID, String title, float estimatedHours) {
+        String sql ="UPDATE subtask SET title = ?, estimated_hours = ? WHERE subtask_id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, title, estimatedHours, taskID);
+        return rowsAffected > 0;
+    }
+
+    public boolean deleteSubTask(int subtaskID) {
+        String sql = "DELETE FROM subtask WHERE subtask_id = ?";
+        int rowsAffected = jdbcTemplate.update(sql,subtaskID);
+        return rowsAffected > 0;
     }
 }

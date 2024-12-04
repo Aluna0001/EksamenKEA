@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/main.css">
+    <title>Rediger task</title>
+</head>
+<body>
+
+<h1>Rediger task</h1>
+<form th:action="@{'/subproject/' + ${subprojectID} + '/update-task/' + ${taskID}}" method="post">
+    <label>Title: <input name="title" autofocus></label><br>
+    <label>Deadline: <input name="deadline" type="datetime-local"></label>
+    <button type="submit">Gem</button>
+</form>
+<hr>
+<a th:href="@{'/subproject/' + ${subprojectID}}"><button>Fortryd</button></a>
+<hr>
+<form th:action="@{'/subproject/' + ${subprojectID} + '/delete-task/' + ${taskID}}" method="post">
+    <label>Bekræft sletning: <input type="checkbox" name="confirm"></label><br>
+    <button type="submit">Slet task</button>
+</form>
+
+</body>
+</html>

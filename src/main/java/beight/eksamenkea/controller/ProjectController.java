@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
@@ -58,29 +59,94 @@ public class ProjectController {
     public String saveNewTask(@RequestParam int id,
                               @RequestParam String title,
                               @RequestParam LocalDateTime deadline) {
-        if(projectService.createTask(id, title, deadline)) return "redirect:/subproject/" + id;
+        if (projectService.createTask(id, title, deadline)) return "redirect:/subproject/" + id;
+        if (projectService.updateTask(id, title, deadline)) return "redirect:/subproject/" + id + "/subprojectID";
         return "redirect:/subproject/" + id + "/create-task";
     }
 
-
-    @GetMapping("/create-sub-task")
-    public String createSubTask() {
-        return "create_sub_task";
+    @GetMapping("/task/{task_id}")
+    public String readTask(@PathVariable int task_id, Model model) {
+        model.addAttribute("task", projectService.getTask(task_id));
+        return "task";
     }
 
-    @PostMapping("/sub-task-created")
-    public String saveNewSubTask(@RequestParam String title,
+    @GetMapping("/subproject/{subprojectID}/update-task/{taskID}")
+    public String updateTask(@PathVariable int subprojectID,
+                             @PathVariable int taskID,
+                             Model model) {
+        model.addAttribute("task", projectService.getTask(taskID));
+        model.addAttribute("subprojectID", subprojectID);
+        return "update_task";
+    }
+
+    @PostMapping("/subproject/{subprojectID}/update-task/{taskID}")
+    public String taskUpdated(@PathVariable int subprojectID,
+                              @PathVariable int taskID,
+                              @RequestParam String title,
+                              @RequestParam LocalDateTime deadline) {
+        if (projectService.updateTask(taskID, title, deadline)) return "redirect:/subproject/" + subprojectID;
+        return "redirect:/subproject/" + subprojectID + "/update-task/" + taskID;
+    }
+
+    @PostMapping("/subproject/{subprojectID}/delete-task/{taskID}")
+    public String deleteTask(@PathVariable int subprojectID,
+                             @PathVariable int taskID,
+                             @RequestParam(required = false) String confirm) {
+        if (projectService.deleteTask(taskID, confirm)) return "redirect:/subproject/" + subprojectID;
+        return "redirect:/update-task";
+    }
+
+    @GetMapping("/task/{id}/create-subtask")
+    public String createSubTask(Model model, @PathVariable int id) {
+        model.addAttribute("taskID", id);
+        return "create_subtask";
+    }
+
+    @PostMapping("/subtask-created")
+    public String saveNewSubTask(@RequestParam int id,
+                                 @RequestParam String title,
                                  @RequestParam(defaultValue = "0") int estimated_time_hours,
                                  @RequestParam(defaultValue = "0") int estimated_time_minutes) {
-        if (projectService.createSubTask(title, estimated_time_hours, estimated_time_minutes)) return "redirect:/";
-        return "redirect:/create-sub-task";
+        if (projectService.createSubTask(id, title, estimated_time_hours, estimated_time_minutes))
+            return "redirect:/task/" + id;
+        return "redirect:/task/" + id + "/create-subtask";
     }
 
-    @GetMapping("/task/{task_id}")
-    public String readTask(@PathVariable int task_id, Model model){
-        model.addAttribute("task", projectService.getTask(task_id));
-       return "task";
+    @GetMapping("/subtask/{id}")
+    public String viewSubtask(@PathVariable int id, Model model) {
+        model.addAttribute("subtask", projectService.getSubtask(id));
+        return "subtask";
     }
+
+    @GetMapping("/task/{taskID}/update-subtask/{subtaskID}")
+    public String updateSubTask(@PathVariable int taskID,
+                                @PathVariable int subtaskID,
+                                Model model) {
+        model.addAttribute("subtask", projectService.getSubtask(subtaskID));
+        model.addAttribute("taskID", taskID);
+        return "update_subtask";
+    }
+
+    @PostMapping("/task/{taskID}/update-subtask/{subtaskID}")
+    public String subTaskUpdated(@PathVariable int taskID,
+                                 @PathVariable int subtaskID,
+                                 @RequestParam String title,
+                                 @RequestParam(defaultValue = "0") int estimated_time_hours,
+                                 @RequestParam(defaultValue = "0") int estimated_time_minutes) {
+        float estimated_hours = estimated_time_hours + (estimated_time_minutes / 60.0f);
+        if (projectService.updateSubTask(taskID, title, estimated_hours)) return "redirect:/task/" + taskID;
+        return "redirect:/task/" + taskID + "/update-subtask/" + subtaskID;
+    }
+
+    @PostMapping("/task/{taskID}/delete-subtask/{subtaskID}")
+    public String deleteSubTask(@PathVariable int taskID,
+                                @PathVariable int subtaskID,
+                                @RequestParam(required = false) String confirm) {
+        if (projectService.deleteSubTask(subtaskID, confirm)) return "redirect:/task/" + taskID;
+        return "redirect:/update-subtask";
+
+    }
+
 
     @GetMapping("/{type}/{id}/change-title")
     public String changeTitle(@PathVariable String type, @PathVariable int id, Model model) {

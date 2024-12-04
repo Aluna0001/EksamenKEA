@@ -7,7 +7,8 @@
 </head>
 <body>
   <h1>New sub-task</h1>
-  <form action="/sub-task-created" method="post">
+  <form action="/subtask-created" method="post">
+    <input type="hidden" name="id" th:value="${taskID}">
     <label>Title: <input name="title" autofocus></label><br>
     <label>Estimated time: <input name="estimated_time_hours" type="number"> hr
       <input name="estimated_time_minutes" type="number"> min</label>

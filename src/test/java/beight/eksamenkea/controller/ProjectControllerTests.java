@@ -3,6 +3,7 @@ package beight.eksamenkea.controller;
 import beight.eksamenkea.model.Project;
 import beight.eksamenkea.model.Subproject;
 import beight.eksamenkea.model.Task;
+import beight.eksamenkea.model.Subtask;
 import beight.eksamenkea.service.ProjectService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,11 +34,13 @@ public class ProjectControllerTests {
 
     private Project project;
     private Subproject subproject;
+    private Subtask subtask;
 
     @BeforeEach
     void setUp() {
         project = new Project(1, "The project");
         subproject = new Subproject(1, 1, "The subproject");
+        subtask = new Subtask(1, 1, "The subtask", 1.25f);
     }
 
     @Test
@@ -128,34 +131,36 @@ public class ProjectControllerTests {
 
     @Test
     void createSubTask() throws Exception {
-        mockMvc.perform(get("/create-sub-task"))
+        mockMvc.perform(get("/task/1/create-subtask"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("create_sub_task"));
+                .andExpect(view().name("create_subtask"));
     }
 
     @Test
     void saveNewSubTaskExpectFalse() throws Exception {
-        when(projectService.createSubTask("The sub task", 1, 1))
+        when(projectService.createSubTask(1, "The sub task", 1, 1))
                 .thenReturn(false);
-        mockMvc.perform(post("/sub-task-created")
+        mockMvc.perform(post("/subtask-created")
+                        .param("id", "1")
                         .param("title", "The sub task")
                         .param("estimated_time_hours", "1")
                         .param("estimated_time_minutes", "1"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/create-sub-task"));
+                .andExpect(redirectedUrl("/task/1/create-subtask"));
     }
 
 
     @Test
     void saveNewSubTaskExpectTrue() throws Exception {
-        when(projectService.createSubTask("The sub task", 1, 1))
+        when(projectService.createSubTask(1, "The sub task", 1, 1))
                 .thenReturn(true);
-        mockMvc.perform(post("/sub-task-created")
+        mockMvc.perform(post("/subtask-created")
+                        .param("id", "1")
                         .param("title", "The sub task")
                         .param("estimated_time_hours", "1")
                         .param("estimated_time_minutes", "1"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/")); //Figure out where to redirect
+                .andExpect(redirectedUrl("/task/1"));
     }
 
     @Test
@@ -168,6 +173,15 @@ public class ProjectControllerTests {
                 .andExpect(model().attributeExists("task"));
     }
 
+    @Test
+    void viewSubtask() throws Exception {
+        when(projectService.getSubtask(1)).thenReturn(subtask);
+        mockMvc.perform(get("/subtask/1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("subtask"))
+                .andExpect(model().attributeExists("subtask"))
+                .andExpect(model().attribute("subtask", subtask));
+    }
     @Test
     void changeTitle() throws Exception {
         mockMvc.perform(get("/project/1/change-title"))
@@ -195,6 +209,65 @@ public class ProjectControllerTests {
                         .param("title", "test"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/project/1/change-title"));
+    }
+    @Test
+    void updateTask() throws Exception {
+        when(projectService.getTask(1)).thenReturn(new Task(1,1,"title",LocalDateTime.now()));
+
+        mockMvc.perform(get("/subproject/1/update-task/1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("update_task"))
+                .andExpect(model().attributeExists("task"));
+    }
+
+    @Test
+    void taskUpdated() throws Exception {
+        when(projectService.updateTask(1, "title", LocalDateTime.now())).thenReturn(true);
+
+        mockMvc.perform(post("/subproject/1/update-task/1")
+                        .param("title","test")
+                        .param("deadline","2024-12-18T08:30"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/subproject/1/update-task/1"));
+    }
+
+    @Test
+    void updateSubTask() throws Exception {
+        when(projectService.getSubtask(1)).thenReturn(new Subtask(1,1,"test",3));
+
+        mockMvc.perform(get("/task/1/update-subtask/1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("update_subtask"))
+                .andExpect(model().attributeExists("subtask"));
+    }
+
+    @Test
+    void subTaskUpdated() throws Exception {
+        when(projectService.updateSubTask(1,"test",3)).thenReturn(true);
+
+        mockMvc.perform(post("/task/1/update-subtask/1")
+                .param("title","test")
+                .param("estimatedHours","3"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/task/1/update-subtask/1"));
+    }
+
+    @Test
+    void deleteTask() throws Exception {
+        when(projectService.deleteTask(1,"confirm")).thenReturn(true);
+
+        mockMvc.perform(post("/subproject/1/delete-task/1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/update-task"));
+    }
+
+    @Test
+    void deleteSubTask() throws Exception {
+        when(projectService.deleteSubTask(1,"confirm")).thenReturn(true);
+
+        mockMvc.perform(post("/task/1/delete-subtask/1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/update-subtask"));
     }
 
 }
