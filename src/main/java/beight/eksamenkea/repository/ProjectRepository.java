@@ -4,6 +4,7 @@ import beight.eksamenkea.model.Project;
 import beight.eksamenkea.model.Subproject;
 import beight.eksamenkea.model.Subtask;
 import beight.eksamenkea.model.Task;
+import beight.eksamenkea.model.Subproject;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Repository;
@@ -163,6 +164,11 @@ public class ProjectRepository {
         return jdbcTemplate.update(sql, id) > 0;
     }
 
+    public Subproject editSubProject(String subprojectName, String subprojectDescription, float subprojectEstimatedTime) {
+        //MissingCode ROWMAPPER
+        return null;
+    }
+
     public Subtask readSubtask(int subtaskID) {
         String sql = "SELECT * FROM subtask WHERE subtask_id = ?";
         return jdbcTemplate.queryForObject(sql,Subtask.ROW_MAPPER,subtaskID);
@@ -177,6 +183,18 @@ public class ProjectRepository {
     public boolean deleteTask(int taskID) {
         String sql ="DELETE FROM task WHERE task_id = ?";
         int rowsAffected = jdbcTemplate.update(sql, taskID);
+        return rowsAffected > 0;
+    }
+
+    public boolean updateSubTask(int taskID, String title, float estimatedHours) {
+        String sql ="UPDATE subtask SET title = ?, estimated_hours = ? WHERE subtask_id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, title, estimatedHours, taskID);
+        return rowsAffected > 0;
+    }
+
+    public boolean deleteSubTask(int subtaskID) {
+        String sql = "DELETE FROM subtask WHERE subtask_id = ?";
+        int rowsAffected = jdbcTemplate.update(sql,subtaskID);
         return rowsAffected > 0;
     }
 }

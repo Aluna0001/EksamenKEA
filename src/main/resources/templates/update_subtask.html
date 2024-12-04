@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/main.css">
+    <title>Rediger Subtask</title>
+</head>
+<body>
+
+<h1>Rediger Subtask</h1>
+<form th:action="@{'/task/' + ${taskID} + '/update-subtask/' + ${subtaskID}}" method="post">
+    <label>Title: <input name="title" autofocus></label><br>
+    <label>Estimated time: <input name="estimated_time_hours" type="number"> hr
+        <input name="estimated_time_minutes" type="number"> min</label>
+    <button type="submit">Gem</button>
+</form>
+<hr>
+<a th:href="@{'/task/' + ${taskID}}">
+    <button>Fortryd</button>
+</a>
+<hr>
+<form th:action="@{'/task/' + ${taskID} + '/delete-subtask/' + ${subtaskID}}" method="post">
+    <label>Bekræft sletning: <input type="checkbox" name="confirm"></label><br>
+    <button type="submit">Slet task</button>
+</form>
+
+</body>
+</html>
