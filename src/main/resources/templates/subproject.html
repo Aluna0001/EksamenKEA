@@ -6,8 +6,8 @@
 </head>
 <body>
 
-<h1 th:text="${subproject.title}"></h1>
-<h2>Subproject</h2>
+<h1 th:text="'Subproject: ' + ${subproject.title}"></h1>
+<a th:href="@{'/subproject/' + ${subproject.subprojectID} + '/change-title'}"><button>Edit title</button></a>
 <a th:href="@{'/project/' + ${subproject.projectID} + '/subproject/' + ${subproject.subprojectID} + '/delete'}"><button>Delete subproject</button></a>
 <p th:text="'Estimated time: ' + ${subproject.totalEstimatedHours} + ' hours.'"></p>
 <table>
