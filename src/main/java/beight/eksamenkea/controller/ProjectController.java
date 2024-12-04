@@ -63,17 +63,25 @@ public class ProjectController {
     }
 
 
-    @GetMapping("/create-sub-task")
-    public String createSubTask() {
-        return "create_sub_task";
+    @GetMapping("/task/{id}/create-subtask")
+    public String createSubTask(Model model, @PathVariable int id) {
+        model.addAttribute("taskID", id);
+        return "create_subtask";
     }
 
-    @PostMapping("/sub-task-created")
-    public String saveNewSubTask(@RequestParam String title,
+    @PostMapping("/subtask-created")
+    public String saveNewSubTask(@RequestParam int id,
+                                 @RequestParam String title,
                                  @RequestParam(defaultValue = "0") int estimated_time_hours,
                                  @RequestParam(defaultValue = "0") int estimated_time_minutes) {
-        if (projectService.createSubTask(title, estimated_time_hours, estimated_time_minutes)) return "redirect:/";
-        return "redirect:/create-sub-task";
+        if (projectService.createSubTask(id, title, estimated_time_hours, estimated_time_minutes)) return "redirect:/task/" + id;
+        return "redirect:/task/" + id + "/create-subtask";
+    }
+
+    @GetMapping("/subtask/{id}")
+    public String viewSubtask(@PathVariable int id, Model model) {
+        model.addAttribute("subtask", projectService.getSubtask(id));
+        return "subtask";
     }
 
     @GetMapping("/task/{task_id}")

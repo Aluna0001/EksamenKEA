@@ -3,6 +3,7 @@ package beight.eksamenkea.service;
 import beight.eksamenkea.model.Project;
 import beight.eksamenkea.model.Subproject;
 import beight.eksamenkea.model.Task;
+import beight.eksamenkea.model.Subtask;
 import beight.eksamenkea.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -32,9 +33,9 @@ public class ProjectService {
         return projectRepository.createTask(subproject_id, title, deadline);
     }
 
-    public boolean createSubTask(String title, int estimated_time_hours, int estimated_time_minutes) {
+    public boolean createSubTask(int taskID, String title, int estimated_time_hours, int estimated_time_minutes) {
         float estimatedHours = (estimated_time_hours+(estimated_time_minutes/60f));
-        return projectRepository.createSubTask(title, estimatedHours);
+        return projectRepository.createSubtask(taskID, title, estimatedHours);
     }
 
     public Task getTask(int task_id){
@@ -49,4 +50,8 @@ public class ProjectService {
         return projectRepository.updateTitle(type, id, title);
     }
 
+
+    public Subtask getSubtask(int subtaskId) {
+        return projectRepository.readSubtask(subtaskId);
+    }
 }
