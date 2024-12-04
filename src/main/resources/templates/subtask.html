@@ -10,5 +10,8 @@
     <h2>Subtask</h2>
     <p th:text="'Estimated time: ' + ${subtask.estimatedHours} + ' hours.'"></p>
     <a th:href="@{'/task/' + ${subtask.taskID}}"><button>Return to task</button></a>
+    <a th:href="@{'/task/' + ${subtask.taskID} + '/update-subtask/' + ${subtask.subtaskID}}">
+        <button>Update Subtask</button>
+    </a>
 </body>
 </html>

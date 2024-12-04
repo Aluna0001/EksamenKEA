@@ -41,6 +41,10 @@ public class ProjectService {
         return projectRepository.updateTask(taskID,title,deadline);
     }
 
+    public boolean updateSubTask(int taskID, String title, float estimatedHours) {
+        return projectRepository.updateSubTask(taskID,title,estimatedHours);
+    }
+
     public boolean createSubTask(int taskID, String title, int estimated_time_hours, int estimated_time_minutes) {
         float estimatedHours = (estimated_time_hours+(estimated_time_minutes/60f));
         return projectRepository.createSubtask(taskID, title, estimatedHours);
@@ -65,4 +69,12 @@ public class ProjectService {
     public Subtask getSubtask(int subtaskId) {
         return projectRepository.readSubtask(subtaskId);
     }
+
+    public boolean deleteSubTask(int subtaskID, String confirm) {
+        if(confirm.equals("on")){
+            return projectRepository.deleteSubTask(subtaskID);
+        }
+        return false;
+    }
+
 }
