@@ -40,7 +40,7 @@ public class ProjectController {
     @GetMapping("/project/{id}/create-subproject")
     public String createSubproject(@PathVariable int id, Model model) {
         model.addAttribute("projectID", id);
-        return "create-subproject";
+        return "create_subproject";
     }
 
     @PostMapping("/subproject-created")
@@ -162,5 +162,9 @@ public class ProjectController {
         return "redirect:/" + type + "/" + id + "/change-title";
     }
 
+    @GetMapping("/editSubProject")
+    public String editSubProject() {
+        return "edit_sub_project";
+    }
 }
 

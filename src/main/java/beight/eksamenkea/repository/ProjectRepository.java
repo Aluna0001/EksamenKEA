@@ -4,6 +4,7 @@ import beight.eksamenkea.model.Project;
 import beight.eksamenkea.model.Subproject;
 import beight.eksamenkea.model.Subtask;
 import beight.eksamenkea.model.Task;
+import beight.eksamenkea.model.Subproject;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Repository;
@@ -157,6 +158,11 @@ public class ProjectRepository {
         return jdbcTemplate.update(sql, title, id) > 0;
     }
 
+
+    public Subproject editSubProject(String subprojectName, String subprojectDescription, float subprojectEstimatedTime) {
+        //MissingCode ROWMAPPER
+        return null;
+    }
 
     public Subtask readSubtask(int subtaskID) {
         String sql = "SELECT * FROM subtask WHERE subtask_id = ?";
