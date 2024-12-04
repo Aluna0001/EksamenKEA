@@ -18,7 +18,15 @@
     </ul>
     <a th:href="@{'/task/' + ${task_id} + '/create-subtask'}">
       <button>Create subtask</button>
+
   </a>
+    <a th:href="@{'/subproject/' + ${task.subprojectID} + '/update-task/' + ${task.taskID}}">
+        <button>Update Task</button>
+    </a>
+
+    <a th:href="@{'/subproject/' + ${task.subprojectID}}">
+        <button>Return to Subproject</button>
+    </a>
 
 </body>
 </html>
