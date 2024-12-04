@@ -5,9 +5,7 @@ import beight.eksamenkea.model.Subproject;
 import beight.eksamenkea.model.Task;
 import beight.eksamenkea.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-
 
 @Service
 public class ProjectService {
@@ -42,4 +40,13 @@ public class ProjectService {
     public Task getTask(int task_id){
         return projectRepository.readTask(task_id);
     }
+
+    public String getTitle(String type, int id) {
+        return projectRepository.readTitle(type, id);
+    }
+
+    public boolean updateTitle(String type, int id, String title) {
+        return projectRepository.updateTitle(type, id, title);
+    }
+
 }

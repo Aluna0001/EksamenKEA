@@ -22,7 +22,7 @@
     </tr>
 </table>
 <a th:href="@{'/subproject/' + ${subproject.subprojectID} + '/create-task'}"><button>New task</button></a>
-<a href="/"><button>Return to project</button></a>
+<a th:href="@{'/project/' + ${projectID}}"><button>Return to project</button></a>
 
 </body>
 </html>

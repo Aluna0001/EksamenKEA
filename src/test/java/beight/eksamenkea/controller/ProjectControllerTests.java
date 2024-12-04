@@ -42,8 +42,15 @@ public class ProjectControllerTests {
 
     @Test
     void viewFrontpage() throws Exception {
-        when(projectService.getProject(1)).thenReturn(project);
         mockMvc.perform(get("/"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/project/1"));
+    }
+
+    @Test
+    void viewProject() throws Exception {
+        when(projectService.getProject(1)).thenReturn(project);
+        mockMvc.perform(get("/project/1"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("project"))
                 .andExpect(model().attributeExists("project"))
@@ -108,14 +115,15 @@ public class ProjectControllerTests {
 
     @Test
     void saveNewTaskExpectTrue() throws Exception {
-        when(projectService.createTask(1,"test", LocalDateTime.now())).thenReturn(true);
+        LocalDateTime deadline = LocalDateTime.now();
+        when(projectService.createTask(1,"test", deadline)).thenReturn(true);
         when(projectService.getSubproject(1)).thenReturn(subproject);
         mockMvc.perform(post("/task-created")
                         .param("id", "1")
-                        .param("title", "Test")
-                        .param("deadline", "2024-12-18T08:30"))
-                .andExpect(status().is3xxRedirection());
-//                .andExpect(redirectedUrl("/subproject/1"));
+                        .param("title", "test")
+                        .param("deadline", deadline.toString()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/subproject/1"));
     }
 
     @Test
@@ -160,6 +168,34 @@ public class ProjectControllerTests {
                 .andExpect(model().attributeExists("task"));
     }
 
+    @Test
+    void changeTitle() throws Exception {
+        mockMvc.perform(get("/project/1/change-title"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("update_title"));
+    }
+
+    @Test
+    void saveTitleExpectTrue() throws Exception {
+        when(projectService.updateTitle("project", 1, "test")).thenReturn(true);
+        mockMvc.perform(post("/title-changed")
+                        .param("type", "project")
+                        .param("id", "1")
+                        .param("title", "test"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/project/1"));
+    }
+
+    @Test
+    void saveTitleExpectFalse() throws Exception {
+        when(projectService.updateTitle("project", 1, "test")).thenReturn(false);
+        mockMvc.perform(post("/title-changed")
+                        .param("type", "project")
+                        .param("id", "1")
+                        .param("title", "test"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/project/1/change-title"));
+    }
 
 }
 
