@@ -6,12 +6,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-//@ActiveProfiles("h2")
+@Transactional
+@ActiveProfiles("h2")
 public class ProjectRepositoryTests {
 
     @Autowired
@@ -74,6 +77,13 @@ public class ProjectRepositoryTests {
         assertFalse(projectRepository.updateTitle("wrongHere", 1, "test"));
         assertFalse(projectRepository.updateTitle("project", 2, "test"));
         assertTrue(projectRepository.updateTitle("project", 1, "test"));
+    }
+
+    @Test
+    void delete() {
+        assertFalse(projectRepository.delete("wrongHere", 1));
+        assertFalse(projectRepository.delete("project", 2));
+        assertTrue(projectRepository.delete("project", 1));
     }
 
 }

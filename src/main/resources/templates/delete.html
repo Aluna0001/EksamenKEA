@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Deletion</title>
+</head>
+<body>
+
+<h1 th:text="'Delete ' + ${type}"></h1>
+<p th:text="'Are you sure you want to delete ' + ${title} + ' permanently?'"></p>
+<a th:href="@{'/' + ${type} + '/' + ${id}}"><button>Cancel</button></a>
+<form action="/deleted" method="post">
+    <input type="hidden" name="url" th:value="${url}">
+    <input type="hidden" name="type" th:value="${type}">
+    <input type="hidden" name="id" th:value="${id}">
+    <label>Confirm deletion: <input type="checkbox" name="confirm"></label><br>
+    <button type="submit">Delete permanently</button>
+</form>
+
+</body>
+</html>

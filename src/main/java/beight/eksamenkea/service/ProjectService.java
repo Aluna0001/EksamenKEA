@@ -61,6 +61,10 @@ public class ProjectService {
         return projectRepository.updateTitle(type, id, title);
     }
 
+    public boolean delete(String type, int id, boolean confirm) {
+        if (confirm) return projectRepository.delete(type, id);
+        return false;
+    }
 
     public Subtask getSubtask(int subtaskId) {
         return projectRepository.readSubtask(subtaskId);

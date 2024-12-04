@@ -13,11 +13,10 @@ public class ProjectServiceTests {
 
     @Autowired
     private ProjectService projectService;
- /*
+
     @Test
-    public void createSubTask(){
-     //Make test when read method is implemented
+    public void delete() {
+        assertFalse(projectService.delete("subproject", 1, false));
     }
-  */
 
 }
