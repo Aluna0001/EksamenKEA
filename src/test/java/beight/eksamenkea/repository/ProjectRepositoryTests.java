@@ -6,12 +6,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-//@ActiveProfiles("h2")
+@Transactional
+@ActiveProfiles("h2")
 public class ProjectRepositoryTests {
 
     @Autowired
@@ -67,6 +70,7 @@ public class ProjectRepositoryTests {
         assertNull(projectRepository.readTitle("wrongHere", 1));
         assertThrows(EmptyResultDataAccessException.class, () -> projectRepository.readTitle("project", 2));
         assertEquals("The project", projectRepository.readTitle("project", 1));
+        assertEquals("The subproject", projectRepository.readTitle("subproject", 1));
     }
 
     @Test
@@ -74,6 +78,14 @@ public class ProjectRepositoryTests {
         assertFalse(projectRepository.updateTitle("wrongHere", 1, "test"));
         assertFalse(projectRepository.updateTitle("project", 2, "test"));
         assertTrue(projectRepository.updateTitle("project", 1, "test"));
+        assertTrue(projectRepository.updateTitle("subproject", 1, "test"));
+    }
+
+    @Test
+    void delete() {
+        assertFalse(projectRepository.delete("wrongHere", 1));
+        assertFalse(projectRepository.delete("subproject", 2));
+        assertTrue(projectRepository.delete("subproject", 1));
     }
 
 }

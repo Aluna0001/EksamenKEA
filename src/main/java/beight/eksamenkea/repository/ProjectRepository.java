@@ -158,6 +158,11 @@ public class ProjectRepository {
         return jdbcTemplate.update(sql, title, id) > 0;
     }
 
+    public boolean delete(String type, int id) {
+        if (!List.of("project", "subproject", "task", "subtask").contains(type)) return false;
+        String sql = "DELETE FROM " + type + " WHERE " + type + "_id = ?";
+        return jdbcTemplate.update(sql, id) > 0;
+    }
 
     public Subproject editSubProject(String subprojectName, String subprojectDescription, float subprojectEstimatedTime) {
         //MissingCode ROWMAPPER

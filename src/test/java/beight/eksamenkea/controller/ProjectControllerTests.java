@@ -183,10 +183,14 @@ public class ProjectControllerTests {
                 .andExpect(model().attribute("subtask", subtask));
     }
     @Test
-    void changeTitle() throws Exception {
+    void changeTitleProject() throws Exception {
+        when(projectService.getTitle("project", 1)).thenReturn("The project");
         mockMvc.perform(get("/project/1/change-title"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("update_title"));
+                .andExpect(view().name("update_title"))
+                .andExpect(model().attribute("type", "project"))
+                .andExpect(model().attribute("id", 1))
+                .andExpect(model().attribute("title", "The project"));
     }
 
     @Test
@@ -210,6 +214,43 @@ public class ProjectControllerTests {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/project/1/change-title"));
     }
+
+    @Test
+    void deleteOption() throws Exception {
+        when(projectService.getTitle("subproject", 1)).thenReturn("The subproject");
+        mockMvc.perform(get("/project/1/subproject/1/delete"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("delete"))
+                .andExpect(model().attribute("url", "/project/1"))
+                .andExpect(model().attribute("type", "subproject"))
+                .andExpect(model().attribute("id", 1))
+                .andExpect(model().attribute("title", "The subproject"));
+    }
+
+    @Test
+    void deleteWithCorfirmation() throws Exception {
+        when(projectService.delete("subproject", 1, true)).thenReturn(true);
+        mockMvc.perform(post("/deleted")
+                        .param("url", "/project/1")
+                        .param("type", "subproject")
+                        .param("id", "1")
+                        .param("confirm", "on"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/project/1"));
+    }
+
+    @Test
+    void deleteWithoutConfirmation() throws Exception {
+        when(projectService.delete("subproject", 1, false)).thenReturn(false);
+        mockMvc.perform(post("/deleted")
+                        .param("url", "/project/1")
+                        .param("type", "subproject")
+                        .param("id", "1")
+                        .param("title", "test"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/project/1/subproject/1/delete"));
+    }
+
     @Test
     void updateTask() throws Exception {
         when(projectService.getTask(1)).thenReturn(new Task(1,1,"title",LocalDateTime.now()));

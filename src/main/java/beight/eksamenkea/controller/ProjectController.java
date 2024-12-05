@@ -149,7 +149,9 @@ public class ProjectController {
 
 
     @GetMapping("/{type}/{id}/change-title")
-    public String changeTitle(@PathVariable String type, @PathVariable int id, Model model) {
+    public String changeTitle(@PathVariable String type,
+                              @PathVariable int id,
+                              Model model) {
         model.addAttribute("type", type);
         model.addAttribute("id", id);
         model.addAttribute("title", projectService.getTitle(type, id));
@@ -157,9 +159,33 @@ public class ProjectController {
     }
 
     @PostMapping("/title-changed")
-    public String saveTitle(@RequestParam String type, @RequestParam int id, @RequestParam String title) {
+    public String saveTitle(@RequestParam String type,
+                            @RequestParam int id,
+                            @RequestParam String title) {
         if (projectService.updateTitle(type, id, title)) return "redirect:/" + type + "/" + id;
         return "redirect:/" + type + "/" + id + "/change-title";
+    }
+
+    @GetMapping("/{supertype}/{superid}/{type}/{id}/delete")
+    public String deleteOption(@PathVariable String supertype,
+                               @PathVariable int superid,
+                               @PathVariable String type,
+                               @PathVariable int id,
+                               Model model) {
+        model.addAttribute("url", "/" + supertype + "/" + superid);
+        model.addAttribute("type", type);
+        model.addAttribute("id", id);
+        model.addAttribute("title", projectService.getTitle(type, id));
+        return "delete";
+    }
+
+    @PostMapping("/deleted")
+    public String deleteConfirmation(@RequestParam String url,
+                                     @RequestParam String type,
+                                     @RequestParam int id,
+                                     @RequestParam(required = false) boolean confirm) {
+        if (projectService.delete(type, id, confirm)) return "redirect:" + url;
+        return "redirect:" + url + "/" + type + "/" + id + "/delete";
     }
 
     @GetMapping("/editSubProject")
