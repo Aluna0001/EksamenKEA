@@ -1,6 +1,5 @@
 package beight.eksamenkea.controller;
 
-import beight.eksamenkea.model.Project;
 import beight.eksamenkea.service.ProjectService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -23,6 +22,12 @@ public class ProjectController {
         if (session.getAttribute("userProfile") == null) throw new RuntimeException("Not logged in.");
     }
 
+    @GetMapping("/projects")
+    public String viewProjects(Model model) {
+        model.addAttribute("projects", projectService.getAllProjects());
+        return "projects";
+    }
+
     @GetMapping("/project/{id}")
     public String viewProject(@PathVariable int id, Model model) {
         model.addAttribute("project", projectService.getProject(id));
@@ -30,15 +35,14 @@ public class ProjectController {
     }
 
     @GetMapping("/create-project")
-    public String createProject(@PathVariable int id, Model model) {
-        model.addAttribute("project", projectService.getProject(id));
+    public String createProject() {
         return "create_project";
     }
 
     @PostMapping("/project-created")
-    public String saveNewProject(@RequestParam int id, @RequestParam String title) {
-        if (projectService.createProject(id, title)) return "redirect:/";
-        return "redirect:/project/" + id + "create-project";
+    public String saveNewProject(@RequestParam String title) {
+        if (projectService.createProject(title)) return "redirect:/projects";
+        return "redirect:/create-project";
     }
 
     @GetMapping("/subproject/{id}")
@@ -186,6 +190,15 @@ public class ProjectController {
         model.addAttribute("type", type);
         model.addAttribute("id", id);
         model.addAttribute("title", projectService.getTitle(type, id));
+        return "delete";
+    }
+
+    @GetMapping("/project/{id}/delete")
+    public String deleteProject(@PathVariable int id, Model model) {
+        model.addAttribute("url", "/projects");
+        model.addAttribute("type", "project");
+        model.addAttribute("id", id);
+        model.addAttribute("title", projectService.getTitle("project", id));
         return "delete";
     }
 

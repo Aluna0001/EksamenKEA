@@ -6,6 +6,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class ProjectService {
@@ -31,6 +32,10 @@ public class ProjectService {
         return projectRepository.readUserProfile(username);
     }
 
+    public List<Project> getAllProjects(){
+        return projectRepository.readAllProjects();
+    }
+
     public Project getProject(int projectID) {
         return projectRepository.readProject(projectID);
     }
@@ -39,12 +44,8 @@ public class ProjectService {
         return projectRepository.readSubproject(subprojectID);
     }
 
-    public boolean createProject(int projectID, String title) {
-        return projectRepository.createProject(projectID, title);
-    }
-
-    public boolean updateProject(int projectID, String title) {
-        return projectRepository.updateProject(projectID, title);
+    public boolean createProject(String title) {
+        return projectRepository.createProject(title);
     }
 
     public boolean createSubproject(int projectID, String title) {

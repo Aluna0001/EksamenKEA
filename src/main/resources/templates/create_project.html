@@ -9,11 +9,10 @@
 
 <h1>Create project</h1>
 <form action="/project-created" method="post">
-    <input type="hidden" name="id" th:value="${projectID}">
     <label>Title: <input name="title" autofocus></label><br>
     <button type="submit">Save new project</button>
 </form>
-<a th:href="@{'/project/' + ${projectID}}"><button>Return to project</button></a>
+<a href="/projects"><button>Return to projects</button></a>
 
 </body>
 </html>

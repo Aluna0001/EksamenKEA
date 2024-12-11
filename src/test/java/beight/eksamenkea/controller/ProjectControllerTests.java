@@ -15,6 +15,8 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -31,6 +33,7 @@ public class ProjectControllerTests {
     @MockitoBean
     private ProjectService projectService;
 
+    private List<Project> projects;
     private Project project;
     private Subproject subproject;
     private Subtask subtask;
@@ -38,6 +41,7 @@ public class ProjectControllerTests {
 
     @BeforeEach
     void setUp() {
+        projects = new ArrayList<>();
         project = new Project(1, "The project");
         subproject = new Subproject(1, 1, "The subproject");
         subtask = new Subtask(1, 1, "The subtask", 1.25f);
@@ -52,6 +56,16 @@ public class ProjectControllerTests {
                 .andExpect(redirectedUrl("/project/1"));
     }
 */
+    @Test
+    void viewAllProjects() throws Exception {
+        mockMvc.perform(get("/projects")
+                        .session(session))
+                .andExpect(status().isOk())
+                .andExpect(view().name("projects"))
+                .andExpect(model().attributeExists("projects"))
+                .andExpect(model().attribute("projects", projects));
+    }
+
     @Test
     void viewProject() throws Exception {
         when(projectService.getProject(1)).thenReturn(project);
