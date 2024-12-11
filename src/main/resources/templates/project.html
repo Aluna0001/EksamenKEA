@@ -1,25 +1,35 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css">
     <title>Project</title>
 </head>
 <body>
+<th:block th:replace="~{darkmode :: base}">
 
-<h1 th:text="'Project: ' + ${project.title}"></h1>
-<a th:href="@{'/project/' + ${project.projectID} + '/change-title'}"><button>Edit title</button></a>
-<p th:text="'Estimated time: ' + ${project.totalEstimatedHours} + ' hours.'"></p>
-<table>
-    <tr>
-        <th>Subprojects</th>
-        <th>Estimated time</th>
-    </tr>
-    <tr th:each="subproject : ${project.subprojects}">
-        <td><a th:href="@{'/subproject/' + ${subproject.subprojectID}}" th:text="${subproject.title}"></a></td>
-        <td th:text="${subproject.totalEstimatedHours} + ' hours'"></td>
-    </tr>
-</table>
-<a th:href="@{'/project/' + ${project.projectID} + '/create-subproject'}"><button>New subproject</button></a>
+    <th:block th:fragment="content">
+        <h1 th:text="'Project: ' + ${project.title}"></h1>
+        <a th:href="@{'/project/' + ${project.projectID} + '/change-title'}">
+            <button>Edit title</button>
+        </a>
+        <p th:text="'Estimated time: ' + ${project.totalEstimatedHours} + ' hours.'"></p>
+        <table>
+            <tr>
+                <th>Subprojects</th>
+                <th>Estimated time</th>
+            </tr>
+            <tr th:each="subproject : ${project.subprojects}">
+                <td><a th:href="@{'/subproject/' + ${subproject.subprojectID}}" th:text="${subproject.title}"></a></td>
+                <td th:text="${subproject.totalEstimatedHours} + ' hours'"></td>
+            </tr>
+        </table>
+        <a th:href="@{'/project/' + ${project.projectID} + '/create-subproject'}">
+            <button>New subproject</button>
+        </a>
+    </th:block>
 
+</th:block>
 </body>
 </html>

@@ -88,4 +88,9 @@ public class ProjectRepositoryTests {
         assertTrue(projectRepository.delete("subproject", 1));
     }
 
+    @Test
+    void toggleDarkMode() {
+        assertTrue(projectRepository.toggleDarkMode("jeha00",true));
+        assertTrue(projectRepository.toggleDarkMode("jeha00",false));
+    }
 }

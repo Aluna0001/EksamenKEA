@@ -1,17 +1,24 @@
 <!DOCTYPE html>
-<html lang="da" xmlns:th="http://thymeleaf.org">
+<html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="/main.css">
+    <link rel="stylesheet" href="/css">
     <title>Sub-task</title>
 </head>
 <body>
-    <h1 th:text="${subtask.title}"></h1>
-    <h2>Subtask</h2>
-    <p th:text="'Estimated time: ' + ${subtask.estimatedHours} + ' hours.'"></p>
-    <a th:href="@{'/task/' + ${subtask.taskID}}"><button>Return to task</button></a>
-    <a th:href="@{'/task/' + ${subtask.taskID} + '/update-subtask/' + ${subtask.subtaskID}}">
-        <button>Update Subtask</button>
-    </a>
+<th:block th:replace="~{darkmode :: base}">
+
+    <th:block th:fragment="content">
+        <h1 th:text="${subtask.title}"></h1>
+        <h2>Subtask</h2>
+        <p th:text="'Estimated time: ' + ${subtask.estimatedHours} + ' hours.'"></p>
+        <a th:href="@{'/task/' + ${subtask.taskID}}">
+            <button>Return to task</button>
+        </a>
+        <a th:href="@{'/task/' + ${subtask.taskID} + '/update-subtask/' + ${subtask.subtaskID}}">
+            <button>Update Subtask</button>
+        </a>
+    </th:block>
+</th:block>
 </body>
 </html>
