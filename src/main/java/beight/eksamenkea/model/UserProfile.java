@@ -33,7 +33,7 @@ public class UserProfile {
         return darkmode;
     }
 
-    public void setDarkmode(boolean darkmode) {
-        this.darkmode = darkmode;
+    public void toggleDarkMode() {
+        this.darkmode = !darkmode;
     }
 }

@@ -1,7 +1,10 @@
 package beight.eksamenkea.controller;
 
+import beight.eksamenkea.model.UserProfile;
 import beight.eksamenkea.service.ProjectService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.apache.catalina.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +21,13 @@ public class ProjectController {
     }
 
     @ModelAttribute
-    public void addAttributes(HttpSession session) {
+    public void addAttributes(HttpSession session, HttpServletRequest request) {
         if (session.getAttribute("userProfile") == null) throw new RuntimeException("Not logged in.");
+        String url = request.getRequestURI();
+        //gem ikke seneste location som en af de her i session
+        if (!url.equals("/css") && !url.equals("/toggle-darkmode")) {
+            session.setAttribute("currentLocation",url);
+        }
     }
 
     @GetMapping("/projects")
@@ -32,6 +40,25 @@ public class ProjectController {
     public String viewProject(@PathVariable int id, Model model) {
         model.addAttribute("project", projectService.getProject(id));
         return "project";
+    }
+
+
+    @PostMapping("/toggle-darkmode")
+    public String toggleDarkMode(@SessionAttribute UserProfile userProfile,
+                                 @SessionAttribute String currentLocation) {
+        projectService.toggleDarkMode(userProfile);
+        //redirecter til der hvor den kommer fra og ikke "toggle-darkmode"
+        return "redirect:" + currentLocation;
+
+    }
+
+    @GetMapping("/css")
+    public String getCSS(@SessionAttribute UserProfile userProfile) {
+        if (userProfile.isDarkmode()) {
+            return "redirect:/darkmode.css";
+        } else {
+            return "redirect:/lightmode.css";
+        }
     }
 
     @GetMapping("/create-project")
@@ -58,7 +85,8 @@ public class ProjectController {
     }
 
     @PostMapping("/subproject-created")
-    public String saveNewSubproject(@RequestParam int id, @RequestParam String title) {
+    public String saveNewSubproject(@RequestParam int id,
+                                    @RequestParam String title) {
         if (projectService.createSubproject(id, title)) return "redirect:/";
         return "redirect:/project/" + id + "/create-subproject";
     }
@@ -160,7 +188,6 @@ public class ProjectController {
         return "redirect:/update-subtask";
 
     }
-
 
     @GetMapping("/{type}/{id}/change-title")
     public String changeTitle(@PathVariable String type,

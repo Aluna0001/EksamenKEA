@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css">
     <title>Project</title>
 </head>
 <body>
+<th:block th:replace="~{darkmode :: base}">
 
 <h1 th:text="'Project: ' + ${project.title}"></h1>
 <a th:href="@{'/project/' + ${project.projectID} + '/change-title'}"><button>Edit title</button></a>
@@ -23,5 +26,6 @@
 <a th:href="@{'/project/' + ${project.projectID} + '/create-subproject'}"><button>New subproject</button></a>
 <a href="/projects"><button>Return to projects</button></a>
 
+</th:block>
 </body>
 </html>
