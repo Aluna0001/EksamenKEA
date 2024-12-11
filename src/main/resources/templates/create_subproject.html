@@ -2,18 +2,24 @@
 <html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="/main.css">
+    <link rel="stylesheet" href="/css">
     <title>Create subproject</title>
 </head>
 <body>
+<th:block th:replace="~{darkmode :: base}">
 
-<h1>Create subproject</h1>
-<form action="/subproject-created" method="post">
-    <input type="hidden" name="id" th:value="${projectID}">
-    <label>Title: <input name="title" autofocus></label><br>
-    <button type="submit">Save new subproject</button>
-</form>
-<a th:href="@{'/project/' + ${projectID}}"><button>Return to project</button></a>
+    <th:block th:fragment="content">
 
+        <h1>Create subproject</h1>
+        <form action="/subproject-created" method="post">
+            <input type="hidden" name="id" th:value="${projectID}">
+            <label>Title: <input name="title" autofocus></label><br>
+            <button type="submit">Save new subproject</button>
+        </form>
+        <a th:href="@{'/project/' + ${projectID}}">
+            <button>Return to project</button>
+        </a>
+    </th:block>
+</th:block>
 </body>
 </html>

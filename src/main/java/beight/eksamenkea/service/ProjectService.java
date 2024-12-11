@@ -95,4 +95,11 @@ public class ProjectService {
         return false;
     }
 
+    public void toggleDarkMode(UserProfile userProfile) {
+        if (projectRepository.toggleDarkMode(userProfile.getUsername(),!userProfile.isDarkmode())) {
+            userProfile.toggleDarkMode();
+        }
+    }
 }
+
+

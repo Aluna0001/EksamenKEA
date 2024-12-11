@@ -198,4 +198,11 @@ public class ProjectRepository {
         int rowsAffected = jdbcTemplate.update(sql,subtaskID);
         return rowsAffected > 0;
     }
+
+    public boolean toggleDarkMode(String username, boolean darkMode){
+     String sql = "UPDATE user_profile SET darkmode = ? WHERE username = ?";
+     return jdbcTemplate.update(sql,darkMode,username) > 0;
+
+    }
+
 }

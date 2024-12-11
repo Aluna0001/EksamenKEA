@@ -2,28 +2,41 @@
 <html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css">
     <title>Subproject</title>
 </head>
 <body>
 
-<h1 th:text="'Subproject: ' + ${subproject.title}"></h1>
-<a th:href="@{'/subproject/' + ${subproject.subprojectID} + '/change-title'}"><button>Edit title</button></a>
-<a th:href="@{'/project/' + ${subproject.projectID} + '/subproject/' + ${subproject.subprojectID} + '/delete'}"><button>Delete subproject</button></a>
-<p th:text="'Estimated time: ' + ${subproject.totalEstimatedHours} + ' hours.'"></p>
-<table>
-    <tr>
-        <th>Tasks</th>
-        <th>Deadline</th>
-        <th>Estimated time</th>
-    </tr>
-    <tr th:each="task : ${subproject.tasks}">
-        <td><a th:href="@{'/task/' + ${task.taskID}}" th:text="${task.title}"></a></td>
-        <td th:text="${task.deadline}"></td>
-        <td th:text="${task.totalEstimatedHours} + ' hours'"></td>
-    </tr>
-</table>
-<a th:href="@{'/subproject/' + ${subproject.subprojectID} + '/create-task'}"><button>New task</button></a>
-<a th:href="@{'/project/' + ${subproject.projectID}}"><button>Return to project</button></a>
+<th:block th:replace="~{darkmode :: base}">
+    <th:block th:fragment="content">
 
+        <h1 th:text="'Subproject: ' + ${subproject.title}"></h1>
+        <a th:href="@{'/subproject/' + ${subproject.subprojectID} + '/change-title'}">
+            <button>Edit title</button>
+        </a>
+        <a th:href="@{'/project/' + ${subproject.projectID} + '/subproject/' + ${subproject.subprojectID} + '/delete'}">
+            <button>Delete subproject</button>
+        </a>
+        <p th:text="'Estimated time: ' + ${subproject.totalEstimatedHours} + ' hours.'"></p>
+        <table>
+            <tr>
+                <th>Tasks</th>
+                <th>Deadline</th>
+                <th>Estimated time</th>
+            </tr>
+            <tr th:each="task : ${subproject.tasks}">
+                <td><a th:href="@{'/task/' + ${task.taskID}}" th:text="${task.title}"></a></td>
+                <td th:text="${task.deadline}"></td>
+                <td th:text="${task.totalEstimatedHours} + ' hours'"></td>
+            </tr>
+        </table>
+        <a th:href="@{'/subproject/' + ${subproject.subprojectID} + '/create-task'}">
+            <button>New task</button>
+        </a>
+        <a th:href="@{'/project/' + ${subproject.projectID}}">
+            <button>Return to project</button>
+        </a>
+    </th:block>
+</th:block>
 </body>
 </html>
