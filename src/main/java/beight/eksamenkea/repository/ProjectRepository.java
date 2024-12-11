@@ -108,6 +108,10 @@ public class ProjectRepository {
         };
         return jdbcTemplate.query(sql, resultSetExtractor, subprojectID);
     }
+    public boolean createProject(int projectID, String title) {
+        String sql = "INSERT INTO project (project_id, title) VALUES (?, ?)";
+        return jdbcTemplate.update(sql, projectID, title) > 0;
+    }
 
     public boolean createSubproject(int projectID, String title) {
         String sql = "INSERT INTO subproject (project_id, title) VALUES (?, ?)";
@@ -183,6 +187,12 @@ public class ProjectRepository {
     public boolean deleteTask(int taskID) {
         String sql ="DELETE FROM task WHERE task_id = ?";
         int rowsAffected = jdbcTemplate.update(sql, taskID);
+        return rowsAffected > 0;
+    }
+
+    public boolean updateProject(int projectID, String title) {
+        String sql ="UPDATE project SET projectID = ?, title = ?";
+        int rowsAffected = jdbcTemplate.update(sql, projectID, title);
         return rowsAffected > 0;
     }
 

@@ -25,6 +25,14 @@ public class ProjectService {
         return projectRepository.readSubproject(subprojectID);
     }
 
+    public boolean createProject(int projectID, String title) {
+        return projectRepository.createProject(projectID, title);
+    }
+
+    public boolean updateProject(int projectID, String title) {
+        return projectRepository.updateProject(projectID, title);
+    }
+
     public boolean createSubproject(int projectID, String title) {
         return projectRepository.createSubproject(projectID, title);
     }
@@ -84,5 +92,4 @@ public class ProjectService {
         }
         return false;
     }
-
 }

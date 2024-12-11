@@ -1,5 +1,6 @@
 package beight.eksamenkea.controller;
 
+import beight.eksamenkea.model.Project;
 import beight.eksamenkea.service.ProjectService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,6 +30,18 @@ public class ProjectController {
     public String viewProject(@PathVariable int id, Model model) {
         model.addAttribute("project", projectService.getProject(id));
         return "project";
+    }
+
+    @GetMapping("/create-project")
+    public String createProject(@PathVariable int id, Model model) {
+        model.addAttribute("project", projectService.getProject(id));
+        return "create_project";
+    }
+
+    @PostMapping("/project-created")
+    public String saveNewProject(@RequestParam int id, @RequestParam String title) {
+        if (projectService.createProject(id, title)) return "redirect:/";
+        return "redirect:/project/" + id + "create-project";
     }
 
     @GetMapping("/subproject/{id}")
