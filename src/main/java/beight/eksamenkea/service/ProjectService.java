@@ -1,10 +1,9 @@
 package beight.eksamenkea.service;
 
-import beight.eksamenkea.model.Project;
-import beight.eksamenkea.model.Subproject;
-import beight.eksamenkea.model.Task;
-import beight.eksamenkea.model.Subtask;
+import beight.eksamenkea.model.*;
 import beight.eksamenkea.repository.ProjectRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
@@ -12,9 +11,24 @@ import java.time.LocalDateTime;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public ProjectService(ProjectRepository projectRepository) {
         this.projectRepository = projectRepository;
+        this.passwordEncoder = new BCryptPasswordEncoder();
+    }
+
+    public boolean login(String username, String password) {
+        try {
+            return passwordEncoder.matches(password, projectRepository.readPassword(username));
+        } catch (EmptyResultDataAccessException e) {
+            // Wrong username
+            return false;
+        }
+    }
+
+    public UserProfile readUserProfile(String username) {
+        return projectRepository.readUserProfile(username);
     }
 
     public Project getProject(int projectID) {

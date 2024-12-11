@@ -1,12 +1,9 @@
 package beight.eksamenkea.controller;
 
 import beight.eksamenkea.service.ProjectService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -20,9 +17,9 @@ public class ProjectController {
         this.projectService = projectService;
     }
 
-    @GetMapping("/")
-    public String viewFrontpage() {
-        return "redirect:/project/1";
+    @ModelAttribute
+    public void addAttributes(HttpSession session) {
+        if (session.getAttribute("userProfile") == null) throw new RuntimeException("Not logged in.");
     }
 
     @GetMapping("/project/{id}")
