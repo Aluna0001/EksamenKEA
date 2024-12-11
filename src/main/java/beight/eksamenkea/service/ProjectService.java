@@ -84,10 +84,6 @@ public class ProjectService {
         return false;
     }
 
-    public Subproject editSubProject(String subprojectName, String subprojectDescription, float subprojectEstimatedTime) {
-        return projectRepository.editSubProject(subprojectName, subprojectDescription, subprojectEstimatedTime);
-    }
-
     public Subtask getSubtask(int subtaskId) {
         return projectRepository.readSubtask(subtaskId);
     }

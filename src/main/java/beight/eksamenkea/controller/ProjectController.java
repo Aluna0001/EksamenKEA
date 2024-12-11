@@ -184,10 +184,5 @@ public class ProjectController {
         if (projectService.delete(type, id, confirm)) return "redirect:" + url;
         return "redirect:" + url + "/" + type + "/" + id + "/delete";
     }
-
-    @GetMapping("/editSubProject")
-    public String editSubProject() {
-        return "edit_sub_project";
-    }
 }
 

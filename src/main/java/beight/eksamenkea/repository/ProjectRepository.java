@@ -170,11 +170,6 @@ public class ProjectRepository {
         return jdbcTemplate.update(sql, id) > 0;
     }
 
-    public Subproject editSubProject(String subprojectName, String subprojectDescription, float subprojectEstimatedTime) {
-        //MissingCode ROWMAPPER
-        return null;
-    }
-
     public Subtask readSubtask(int subtaskID) {
         String sql = "SELECT * FROM subtask WHERE subtask_id = ?";
         return jdbcTemplate.queryForObject(sql,Subtask.ROW_MAPPER,subtaskID);
