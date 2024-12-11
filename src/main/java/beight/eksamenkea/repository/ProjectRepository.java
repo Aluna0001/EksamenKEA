@@ -1,10 +1,7 @@
 package beight.eksamenkea.repository;
 
-import beight.eksamenkea.model.Project;
-import beight.eksamenkea.model.Subproject;
-import beight.eksamenkea.model.Subtask;
-import beight.eksamenkea.model.Task;
-import beight.eksamenkea.model.Subproject;
+import beight.eksamenkea.model.*;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Repository;
@@ -22,6 +19,15 @@ public class ProjectRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public String readPassword(String username) throws EmptyResultDataAccessException {
+        String sql = "SELECT encoded_password FROM user_profile WHERE username = ?";
+        return jdbcTemplate.queryForObject(sql, String.class, username);
+    }
+
+    public UserProfile readUserProfile(String username) {
+        String sql = "SELECT * FROM user_profile WHERE username = ?";
+        return jdbcTemplate.queryForObject(sql, UserProfile.ROW_MAPPER, username);
+    }
 
     public boolean createTask(int subprojectID, String title, LocalDateTime deadline) {
         String sql = "INSERT INTO task (subproject_id, title, deadline) VALUES (?, ?, ?)";
@@ -166,11 +172,6 @@ public class ProjectRepository {
         if (!List.of("project", "subproject", "task", "subtask").contains(type)) return false;
         String sql = "DELETE FROM " + type + " WHERE " + type + "_id = ?";
         return jdbcTemplate.update(sql, id) > 0;
-    }
-
-    public Subproject editSubProject(String subprojectName, String subprojectDescription, float subprojectEstimatedTime) {
-        //MissingCode ROWMAPPER
-        return null;
     }
 
     public Subtask readSubtask(int subtaskID) {

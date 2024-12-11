@@ -1,3 +1,10 @@
+CREATE TABLE user_profile(
+    user_profile_id INT PRIMARY KEY AUTO_INCREMENT,
+    username CHAR(6) NOT NULL UNIQUE,
+    encoded_password CHAR(60) NOT NULL,
+    darkmode BOOLEAN NOT NULL
+);
+
 CREATE TABLE project(
     project_id INT PRIMARY KEY AUTO_INCREMENT,
     title VARCHAR(20) NOT NULL
@@ -26,6 +33,7 @@ CREATE TABLE subtask(
     FOREIGN KEY(task_id) REFERENCES task(task_id) ON DELETE CASCADE
 );
 
+INSERT INTO user_profile (username, encoded_password, darkmode) VALUES ('jeha00', '$2a$10$q8XQmvEWn0.2Z51n.ZfqledPZXjAiI9iFfvXAppK0aSTVqcfKMgeK', true);
 INSERT INTO project (title) VALUES ('The project');
 INSERT INTO subproject (project_id, title) VALUES (1, 'The subproject');
 INSERT INTO task (subproject_id, title, deadline) VALUES (1, 'The task', NOW());
