@@ -6,6 +6,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class ProjectService {
@@ -31,12 +32,20 @@ public class ProjectService {
         return projectRepository.readUserProfile(username);
     }
 
+    public List<Project> getAllProjects(){
+        return projectRepository.readAllProjects();
+    }
+
     public Project getProject(int projectID) {
         return projectRepository.readProject(projectID);
     }
 
     public Subproject getSubproject(int subprojectID) {
         return projectRepository.readSubproject(subprojectID);
+    }
+
+    public boolean createProject(String title) {
+        return projectRepository.createProject(title);
     }
 
     public boolean createSubproject(int projectID, String title) {
@@ -64,13 +73,6 @@ public class ProjectService {
         return projectRepository.createSubtask(taskID, title, estimatedHours);
     }
 
-    public boolean deleteTask(int taskID, String confirm) {
-        if(confirm.equals("on")){
-            return projectRepository.deleteTask(taskID);
-        }
-        return false;
-    }
-
     public String getTitle(String type, int id) {
         return projectRepository.readTitle(type, id);
     }
@@ -86,13 +88,6 @@ public class ProjectService {
 
     public Subtask getSubtask(int subtaskId) {
         return projectRepository.readSubtask(subtaskId);
-    }
-
-    public boolean deleteSubTask(int subtaskID, String confirm) {
-        if(confirm.equals("on")){
-            return projectRepository.deleteSubTask(subtaskID);
-        }
-        return false;
     }
 
     public void toggleDarkMode(UserProfile userProfile) {

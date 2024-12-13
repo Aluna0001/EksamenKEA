@@ -34,6 +34,11 @@ public class ProjectRepository {
         return jdbcTemplate.update(sql,subprojectID, title,deadline) > 0;
     }
 
+    public List<Project> readAllProjects() {
+        String sql = "SELECT * FROM project";
+        return jdbcTemplate.query(sql, Project.ROW_MAPPER);
+    }
+
     public Project readProject(int projectID) {
         String sql = """
                 SELECT
@@ -114,6 +119,10 @@ public class ProjectRepository {
         };
         return jdbcTemplate.query(sql, resultSetExtractor, subprojectID);
     }
+    public boolean createProject(String title) {
+        String sql = "INSERT INTO project (title) VALUES (?)";
+        return jdbcTemplate.update(sql, title) > 0;
+    }
 
     public boolean createSubproject(int projectID, String title) {
         String sql = "INSERT INTO subproject (project_id, title) VALUES (?, ?)";
@@ -181,21 +190,9 @@ public class ProjectRepository {
         return rowsAffected > 0;
     }
 
-    public boolean deleteTask(int taskID) {
-        String sql ="DELETE FROM task WHERE task_id = ?";
-        int rowsAffected = jdbcTemplate.update(sql, taskID);
-        return rowsAffected > 0;
-    }
-
     public boolean updateSubTask(int taskID, String title, float estimatedHours) {
         String sql ="UPDATE subtask SET title = ?, estimated_hours = ? WHERE subtask_id = ?";
         int rowsAffected = jdbcTemplate.update(sql, title, estimatedHours, taskID);
-        return rowsAffected > 0;
-    }
-
-    public boolean deleteSubTask(int subtaskID) {
-        String sql = "DELETE FROM subtask WHERE subtask_id = ?";
-        int rowsAffected = jdbcTemplate.update(sql,subtaskID);
         return rowsAffected > 0;
     }
 

@@ -11,6 +11,9 @@
     <th:block th:fragment="content">
         <h1>Task Details</h1>
         <h2 th:text="${task.title}"></h2>
+        <a th:href="@{'/subproject/' + ${task.subprojectID} + '/task/' + ${task.taskID} + '/delete'}">
+            <button>Delete task</button>
+        </a>
         <p>Deadline: <span th:text="${task.deadline}"></span></p>
 
         <h3>Subtasks</h3>

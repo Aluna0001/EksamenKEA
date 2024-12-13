@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -32,6 +34,7 @@ public class ProjectControllerTests {
     @MockitoBean
     private ProjectService projectService;
 
+    private List<Project> projects;
     private Project project;
     private Subproject subproject;
     private Subtask subtask;
@@ -39,6 +42,7 @@ public class ProjectControllerTests {
 
     @BeforeEach
     void setUp() {
+        projects = new ArrayList<>();
         project = new Project(1, "The project");
         subproject = new Subproject(1, 1, "The subproject");
         subtask = new Subtask(1, 1, "The subtask", 1.25f);
@@ -55,6 +59,16 @@ public class ProjectControllerTests {
                     .andExpect(redirectedUrl("/project/1"));
         }
     */
+    @Test
+    void viewAllProjects() throws Exception {
+        mockMvc.perform(get("/projects")
+                        .session(session))
+                .andExpect(status().isOk())
+                .andExpect(view().name("projects"))
+                .andExpect(model().attributeExists("projects"))
+                .andExpect(model().attribute("projects", projects));
+    }
+
     @Test
     void viewProject() throws Exception {
         when(projectService.getProject(1)).thenReturn(project);
@@ -75,6 +89,34 @@ public class ProjectControllerTests {
                 .andExpect(view().name("subproject"))
                 .andExpect(model().attributeExists("subproject"))
                 .andExpect(model().attribute("subproject", subproject));
+    }
+
+    @Test
+    void createProject() throws Exception {
+        mockMvc.perform(get("/create-project")
+                        .session(session))
+                .andExpect(status().isOk())
+                .andExpect(view().name("create_project"));
+    }
+
+    @Test
+    void saveNewProjectExpectFalse() throws Exception {
+        when(projectService.createProject("test")).thenReturn(false);
+        mockMvc.perform(post("/project-created")
+                        .session(session)
+                        .param("title", "test"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/create-project"));
+    }
+
+    @Test
+    void saveNewProjectExpectTrue() throws Exception {
+        when(projectService.createProject("test")).thenReturn(true);
+        mockMvc.perform(post("/project-created")
+                        .session(session)
+                        .param("title", "test"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects"));
     }
 
     @Test
@@ -104,7 +146,7 @@ public class ProjectControllerTests {
                         .param("id", "1")
                         .param("title", "test"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/"));
+                .andExpect(redirectedUrl("/project/1"));
     }
 
     @Test
@@ -163,7 +205,6 @@ public class ProjectControllerTests {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/task/1/create-subtask"));
     }
-
 
     @Test
     void saveNewSubTaskExpectTrue() throws Exception {
@@ -237,6 +278,19 @@ public class ProjectControllerTests {
     }
 
     @Test
+    void deleteProject() throws Exception {
+        when(projectService.getTitle("project", 1)).thenReturn("The project");
+        mockMvc.perform(get("/project/1/delete")
+                        .session(session))
+                .andExpect(status().isOk())
+                .andExpect(view().name("delete"))
+                .andExpect(model().attribute("url", "/projects"))
+                .andExpect(model().attribute("type", "project"))
+                .andExpect(model().attribute("id", 1))
+                .andExpect(model().attribute("title", "The project"));
+    }
+
+    @Test
     void deleteOption() throws Exception {
         when(projectService.getTitle("subproject", 1)).thenReturn("The subproject");
         mockMvc.perform(get("/project/1/subproject/1/delete")
@@ -250,7 +304,7 @@ public class ProjectControllerTests {
     }
 
     @Test
-    void deleteWithCorfirmation() throws Exception {
+    void deleteWithConfirmation() throws Exception {
         when(projectService.delete("subproject", 1, true)).thenReturn(true);
         mockMvc.perform(post("/deleted")
                         .session(session)
@@ -274,6 +328,8 @@ public class ProjectControllerTests {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/project/1/subproject/1/delete"));
     }
+
+
 
     @Test
     void updateTask() throws Exception {
@@ -317,23 +373,6 @@ public class ProjectControllerTests {
                 .andExpect(redirectedUrl("/task/1/update-subtask/1"));
     }
 
-    @Test
-    void deleteTask() throws Exception {
-        when(projectService.deleteTask(1, "confirm")).thenReturn(true);
-        mockMvc.perform(post("/subproject/1/delete-task/1")
-                        .session(session))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/update-task"));
-    }
-
-    @Test
-    void deleteSubTask() throws Exception {
-        when(projectService.deleteSubTask(1, "confirm")).thenReturn(true);
-        mockMvc.perform(post("/task/1/delete-subtask/1")
-                        .session(session))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/update-subtask"));
-    }
 
     @Test
     void toggleDarkMode() throws Exception {
