@@ -190,22 +190,9 @@ public class ProjectRepository {
         return rowsAffected > 0;
     }
 
-    public boolean deleteTask(int taskID) {
-        String sql ="DELETE FROM task WHERE task_id = ?";
-        int rowsAffected = jdbcTemplate.update(sql, taskID);
-        return rowsAffected > 0;
-    }
-
-
     public boolean updateSubTask(int taskID, String title, float estimatedHours) {
         String sql ="UPDATE subtask SET title = ?, estimated_hours = ? WHERE subtask_id = ?";
         int rowsAffected = jdbcTemplate.update(sql, title, estimatedHours, taskID);
-        return rowsAffected > 0;
-    }
-
-    public boolean deleteSubTask(int subtaskID) {
-        String sql = "DELETE FROM subtask WHERE subtask_id = ?";
-        int rowsAffected = jdbcTemplate.update(sql,subtaskID);
         return rowsAffected > 0;
     }
 

@@ -73,13 +73,6 @@ public class ProjectService {
         return projectRepository.createSubtask(taskID, title, estimatedHours);
     }
 
-    public boolean deleteTask(int taskID, String confirm) {
-        if(confirm.equals("on")){
-            return projectRepository.deleteTask(taskID);
-        }
-        return false;
-    }
-
     public String getTitle(String type, int id) {
         return projectRepository.readTitle(type, id);
     }
@@ -95,13 +88,6 @@ public class ProjectService {
 
     public Subtask getSubtask(int subtaskId) {
         return projectRepository.readSubtask(subtaskId);
-    }
-
-    public boolean deleteSubTask(int subtaskID, String confirm) {
-        if(confirm.equals("on")){
-            return projectRepository.deleteSubTask(subtaskID);
-        }
-        return false;
     }
 
     public void toggleDarkMode(UserProfile userProfile) {

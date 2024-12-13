@@ -1,5 +1,6 @@
 package beight.eksamenkea.repository;
 
+import beight.eksamenkea.model.Project;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +20,11 @@ public class ProjectRepositoryTests {
 
     @Autowired
     private ProjectRepository projectRepository;
+
+    @Test
+    void readAllProjects() {
+        assertEquals(1, projectRepository.readAllProjects().size());
+    }
 
     @Test
     void readProject() {
@@ -42,6 +48,12 @@ public class ProjectRepositoryTests {
     void readSubtask() {
         assertThrows(EmptyResultDataAccessException.class, () -> projectRepository.readSubtask(2));
         assertEquals("The subtask", projectRepository.readSubtask(1).getTitle());
+    }
+
+    @Test
+    void createProject() {
+        assertThrows(DataIntegrityViolationException.class, () -> projectRepository.createProject(null));
+        assertTrue(projectRepository.createProject("test"));
     }
 
     @Test
@@ -85,7 +97,9 @@ public class ProjectRepositoryTests {
     void delete() {
         assertFalse(projectRepository.delete("wrongHere", 1));
         assertFalse(projectRepository.delete("subproject", 2));
+        assertFalse(projectRepository.delete("project", 2));
         assertTrue(projectRepository.delete("subproject", 1));
+        assertTrue(projectRepository.delete("project", 1));
     }
 
     @Test

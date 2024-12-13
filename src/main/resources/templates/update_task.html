@@ -19,11 +19,6 @@
         <a th:href="@{'/subproject/' + ${subprojectID}}">
             <button>Cancel</button>
         </a>
-        <hr>
-        <form th:action="@{'/subproject/' + ${subprojectID} + '/delete-task/' + ${taskID}}" method="post">
-            <label>Confirm deletion: <input type="checkbox" name="confirm"></label><br>
-            <button type="submit">Delete task</button>
-        </form>
     </th:block>
 </th:block>
 </body>

@@ -2,15 +2,20 @@
 <html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
   <meta charset="UTF-8">
+  <link rel="stylesheet" href="/css">
   <title>Projects</title>
 </head>
 <body>
-  <h1>Projects</h1>
-  <table>
-    <tr th:each="project : ${projects}">
-      <td><a th:href="@{'/project/' + ${project.projectID}}" th:text="${project.title}"></a></td>
-    </tr>
-  </table>
-  <a th:href="@{/create-project}"><button>New project</button></a>
+<th:block th:replace="~{darkmode :: base}">
+  <th:block th:fragment="content">
+    <h1>Projects</h1>
+    <table>
+      <tr th:each="project : ${projects}">
+        <td><a th:href="@{'/project/' + ${project.projectID}}" th:text="${project.title}"></a></td>
+      </tr>
+    </table>
+    <a th:href="@{/create-project}"><button>New project</button></a>
+  </th:block>
+</th:block>
 </body>
 </html>

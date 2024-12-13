@@ -87,7 +87,7 @@ public class ProjectController {
     @PostMapping("/subproject-created")
     public String saveNewSubproject(@RequestParam int id,
                                     @RequestParam String title) {
-        if (projectService.createSubproject(id, title)) return "redirect:/";
+        if (projectService.createSubproject(id, title)) return "redirect:/project/" + id;
         return "redirect:/project/" + id + "/create-subproject";
     }
 
@@ -130,14 +130,6 @@ public class ProjectController {
         return "redirect:/subproject/" + subprojectID + "/update-task/" + taskID;
     }
 
-    @PostMapping("/subproject/{subprojectID}/delete-task/{taskID}")
-    public String deleteTask(@PathVariable int subprojectID,
-                             @PathVariable int taskID,
-                             @RequestParam(required = false) String confirm) {
-        if (projectService.deleteTask(taskID, confirm)) return "redirect:/subproject/" + subprojectID;
-        return "redirect:/update-task";
-    }
-
     @GetMapping("/task/{id}/create-subtask")
     public String createSubTask(Model model, @PathVariable int id) {
         model.addAttribute("taskID", id);
@@ -178,15 +170,6 @@ public class ProjectController {
         float estimated_hours = estimated_time_hours + (estimated_time_minutes / 60.0f);
         if (projectService.updateSubTask(taskID, title, estimated_hours)) return "redirect:/task/" + taskID;
         return "redirect:/task/" + taskID + "/update-subtask/" + subtaskID;
-    }
-
-    @PostMapping("/task/{taskID}/delete-subtask/{subtaskID}")
-    public String deleteSubTask(@PathVariable int taskID,
-                                @PathVariable int subtaskID,
-                                @RequestParam(required = false) String confirm) {
-        if (projectService.deleteSubTask(subtaskID, confirm)) return "redirect:/task/" + taskID;
-        return "redirect:/update-subtask";
-
     }
 
     @GetMapping("/{type}/{id}/change-title")

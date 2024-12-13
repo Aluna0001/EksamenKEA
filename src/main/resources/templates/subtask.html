@@ -11,6 +11,9 @@
     <th:block th:fragment="content">
         <h1 th:text="${subtask.title}"></h1>
         <h2>Subtask</h2>
+        <a th:href="@{'/task/' + ${subtask.taskID} + '/subtask/' + ${subtask.subtaskID} + '/delete'}">
+            <button>Delete subtask</button>
+        </a>
         <p th:text="'Estimated time: ' + ${subtask.estimatedHours} + ' hours.'"></p>
         <a th:href="@{'/task/' + ${subtask.taskID}}">
             <button>Return to task</button>
