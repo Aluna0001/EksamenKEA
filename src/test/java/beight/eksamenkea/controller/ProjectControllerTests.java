@@ -278,6 +278,19 @@ public class ProjectControllerTests {
     }
 
     @Test
+    void deleteProject() throws Exception {
+        when(projectService.getTitle("project", 1)).thenReturn("The project");
+        mockMvc.perform(get("/project/1/delete")
+                        .session(session))
+                .andExpect(status().isOk())
+                .andExpect(view().name("delete"))
+                .andExpect(model().attribute("url", "/projects"))
+                .andExpect(model().attribute("type", "project"))
+                .andExpect(model().attribute("id", 1))
+                .andExpect(model().attribute("title", "The project"));
+    }
+
+    @Test
     void deleteOption() throws Exception {
         when(projectService.getTitle("subproject", 1)).thenReturn("The subproject");
         mockMvc.perform(get("/project/1/subproject/1/delete")
@@ -291,7 +304,7 @@ public class ProjectControllerTests {
     }
 
     @Test
-    void deleteWithCorfirmation() throws Exception {
+    void deleteWithConfirmation() throws Exception {
         when(projectService.delete("subproject", 1, true)).thenReturn(true);
         mockMvc.perform(post("/deleted")
                         .session(session)
@@ -315,6 +328,8 @@ public class ProjectControllerTests {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/project/1/subproject/1/delete"));
     }
+
+
 
     @Test
     void updateTask() throws Exception {

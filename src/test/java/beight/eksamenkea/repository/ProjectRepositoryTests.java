@@ -96,8 +96,14 @@ public class ProjectRepositoryTests {
     @Test
     void delete() {
         assertFalse(projectRepository.delete("wrongHere", 1));
-        assertFalse(projectRepository.delete("subproject", 2));
+
         assertFalse(projectRepository.delete("project", 2));
+        assertFalse(projectRepository.delete("subproject", 2));
+        assertFalse(projectRepository.delete("task", 2));
+        assertFalse(projectRepository.delete("subtask", 2));
+
+        assertTrue(projectRepository.delete("subtask", 1));
+        assertTrue(projectRepository.delete("task", 1));
         assertTrue(projectRepository.delete("subproject", 1));
         assertTrue(projectRepository.delete("project", 1));
     }
