@@ -14,7 +14,25 @@
         <a th:href="@{'/task/' + ${subtask.taskID} + '/subtask/' + ${subtask.subtaskID} + '/delete'}">
             <button>Delete subtask</button>
         </a>
+        <p th:text="'Spent time: ' + ${subtask.spentHours} + ' hours.'"></p>
+        <form th:action="@{'/subtask/' + ${subtask.subtaskID} + '/spenthours-changed'}" method="post">
+            <label for="spentHours">Edit Spent Hours:</label>
+            <input type="number" id="spentHours" name="spent_time_hours" min="0" required>
+            <label for="spentMinutes">Edit Spent Minutes:</label>
+            <input type="number" id="spentMinutes" name="spent_time_minutes" min="0" max="59" required>
+            <button type="submit">Update Spent Hours</button>
+        </form>
+
+        <p th:text="'CO2 equivalent: ' + ${subtask.CO2e} + '.'"></p>
+        <form th:action="@{'/subtask/' + ${subtask.subtaskID} + '/co2-changed'}" method="post">
+            <label for="co2e">Edit CO2:</label>
+            <input type="number" id="co2e" name="CO2e" min="0" required>
+            <button type="submit">Update CO2</button>
+        </form>
+
+
         <p th:text="'Estimated time: ' + ${subtask.estimatedHours} + ' hours.'"></p>
+        <p th:text="'Percentage done: ' + ${subtask.percentageDone} + '%.'"></p>
         <a th:href="@{'/task/' + ${subtask.taskID}}">
             <button>Return to task</button>
         </a>

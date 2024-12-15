@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Repository;
 
+import java.security.PublicKey;
 import java.sql.ResultSet;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -190,9 +191,9 @@ public class ProjectRepository {
         return rowsAffected > 0;
     }
 
-    public boolean updateSubTask(int taskID, String title, float estimatedHours) {
-        String sql ="UPDATE subtask SET title = ?, estimated_hours = ? WHERE subtask_id = ?";
-        int rowsAffected = jdbcTemplate.update(sql, title, estimatedHours, taskID);
+    public boolean updateSubTask(int taskID, String title, float estimatedHours, float CO2E, int percentageDone, float spentHours) {
+        String sql ="UPDATE subtask SET title = ?, estimated_hours = ?, co2e = ?, percentage_done = ?, spent_hours = ?  WHERE subtask_id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, title, estimatedHours, CO2E,percentageDone, spentHours, taskID);
         return rowsAffected > 0;
     }
 
@@ -200,6 +201,29 @@ public class ProjectRepository {
      String sql = "UPDATE user_profile SET darkmode = ? WHERE username = ?";
      return jdbcTemplate.update(sql,darkMode,username) > 0;
 
+    }
+
+    public float readSpentHours(int subtaskID){
+        String sql = "SELECT spent_hours FROM subtask WHERE subtask_id = ?";
+        return jdbcTemplate.queryForObject(sql, float.class, subtaskID);
+    }
+
+    public boolean updateSpentHours(int subtaskID, float spentHours) {
+        String sql = "UPDATE subtask SET spent_hours = ? WHERE subtask_id= ?";
+        int rowsAffected = jdbcTemplate.update(sql, spentHours, subtaskID);
+        return rowsAffected > 0;
+    }
+
+    public float readCO2e(int subtaskID) {
+        String sql ="SELECT co2e FROM subtask WHERE subtask_id = ?";
+        return jdbcTemplate.queryForObject(sql, float.class, subtaskID);
+    }
+
+
+    public boolean updateCO2e(int subtaskID, float co2e) {
+        String sql = "UPDATE subtask SET co2e = ? WHERE subtask_id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, co2e, subtaskID);
+        return rowsAffected > 0;
     }
 
 }

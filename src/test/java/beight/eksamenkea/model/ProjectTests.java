@@ -19,8 +19,8 @@ public class ProjectTests {
         Task task1 = new Task(1, 1, "Task1", LocalDateTime.now());
         Subproject subproject2 = new Subproject(1, 2, "Subproject2");
         Task task2 = new Task(2, 2, "Task2", LocalDateTime.now());
-        task1.getSubtasks().add(new Subtask(1, 1, "Subtask1", 3.5f));
-        task2.getSubtasks().add(new Subtask(2, 2, "Subtask2", 2.7f));
+        task1.getSubtasks().add(new Subtask(1, 1, "Subtask1", 3.5f,1.5f,3));
+        task2.getSubtasks().add(new Subtask(2, 2, "Subtask2", 2.7f, 2.5f,2));
         subproject1.getTasks().add(task1);
         subproject2.getTasks().add(task2);
         project.getSubprojects().add(subproject1);

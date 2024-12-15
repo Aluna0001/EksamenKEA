@@ -38,14 +38,15 @@ public class ProjectControllerTests {
     private Project project;
     private Subproject subproject;
     private Subtask subtask;
-    @MockitoBean MockHttpSession session;
+    @MockitoBean
+    MockHttpSession session;
 
     @BeforeEach
     void setUp() {
         projects = new ArrayList<>();
         project = new Project(1, "The project");
         subproject = new Subproject(1, 1, "The subproject");
-        subtask = new Subtask(1, 1, "The subtask", 1.25f);
+        subtask = new Subtask(1, 1, "The subtask", 1.25f, 5, 2);
         when(session.getAttribute("userProfile")).
                 thenReturn(new UserProfile(1, "jeha00", true));
 
@@ -194,28 +195,28 @@ public class ProjectControllerTests {
 
     @Test
     void saveNewSubTaskExpectFalse() throws Exception {
-        when(projectService.createSubTask(1, "The sub task", 1, 1))
+        when(projectService.createSubTask(1, "The sub task", 1, 5))
                 .thenReturn(false);
         mockMvc.perform(post("/subtask-created")
                         .session(session)
                         .param("id", "1")
                         .param("title", "The sub task")
                         .param("estimated_time_hours", "1")
-                        .param("estimated_time_minutes", "1"))
+                        .param("estimated_time_minutes", "5"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/task/1/create-subtask"));
     }
 
     @Test
     void saveNewSubTaskExpectTrue() throws Exception {
-        when(projectService.createSubTask(1, "The sub task", 1, 1))
+        when(projectService.createSubTask(1, "The sub task", 1, 5))
                 .thenReturn(true);
         mockMvc.perform(post("/subtask-created")
                         .session(session)
                         .param("id", "1")
                         .param("title", "The sub task")
                         .param("estimated_time_hours", "1")
-                        .param("estimated_time_minutes", "1"))
+                        .param("estimated_time_minutes", "5"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/task/1"));
     }
@@ -252,6 +253,7 @@ public class ProjectControllerTests {
                 .andExpect(model().attribute("id", 1))
                 .andExpect(model().attribute("title", "The project"));
     }
+
 
     @Test
     void saveTitleExpectTrue() throws Exception {
@@ -330,7 +332,6 @@ public class ProjectControllerTests {
     }
 
 
-
     @Test
     void updateTask() throws Exception {
         when(projectService.getTask(1)).thenReturn(new Task(1, 1, "title", LocalDateTime.now()));
@@ -354,7 +355,7 @@ public class ProjectControllerTests {
 
     @Test
     void updateSubTask() throws Exception {
-        when(projectService.getSubtask(1)).thenReturn(new Subtask(1, 1, "test", 3));
+        when(projectService.getSubtask(1)).thenReturn(new Subtask(1, 1, "test", 3, 5, 2));
         mockMvc.perform(get("/task/1/update-subtask/1")
                         .session(session))
                 .andExpect(status().isOk())
@@ -364,11 +365,13 @@ public class ProjectControllerTests {
 
     @Test
     void subTaskUpdated() throws Exception {
-        when(projectService.updateSubTask(1, "test", 3)).thenReturn(true);
+        when(projectService.updateSubTask(1, "test", 3, 2, 60, 5)).thenReturn(true);
         mockMvc.perform(post("/task/1/update-subtask/1")
                         .session(session)
                         .param("title", "test")
-                        .param("estimatedHours", "3"))
+                        .param("estimatedHours", "3")
+                        .param("CO2E", "2")
+                        .param("percentageDone", "60"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/task/1/update-subtask/1"));
     }
@@ -388,6 +391,74 @@ public class ProjectControllerTests {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/darkmode.css"));
 
+    }
+
+    //co2e = 5
+    @Test
+    void changeSpentHours() throws Exception {
+        when(projectService.getSubtask(1)).thenReturn(subtask);
+
+        mockMvc.perform(get("/subtask/1/change-spenthours")
+                        .session(session))
+                .andExpect(status().isOk())
+                .andExpect(view().name("update_spenthours"))
+                .andExpect(model().attributeExists("subtask"))
+                .andExpect(model().attribute("subtask", subtask));
+
+    }
+
+    @Test
+    void changeCO2() throws Exception {
+        when(projectService.getSubtask(1)).thenReturn(subtask);
+        mockMvc.perform(get("/subtask/1/change-co2")
+                        .session(session))
+                .andExpect(status().isOk())
+                .andExpect(view().name("update_co2"))
+                .andExpect(model().attributeExists("subtask"))
+                .andExpect(model().attribute("subtask", subtask));
+    }
+
+    @Test
+    void saveSpentHoursExpectTrue() throws Exception {
+        when(projectService.updateSpentHours(1, 2)).thenReturn(true);
+        mockMvc.perform(post("/subtask/1/spenthours-changed")
+                        .session(session)
+                        .param("spent_time_hours", "2")
+                        .param("spent_time_minutes", "0"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/subtask/1"));
+    }
+
+    @Test
+    void saveSpentHoursExpectFalse() throws Exception {
+        when(projectService.updateSpentHours(1, 3)).thenReturn(false);
+        mockMvc.perform(post("/subtask/1/spenthours-changed")
+                .session(session)
+                .param("spent_time_hours","3")
+                .param("spent_time_minutes","0"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/subtask/1/change-spenthours"));
+
+    }
+
+    @Test
+    void saveCO2ExpectTrue() throws Exception {
+        when(projectService.updateCO2e(1,5)).thenReturn(true);
+        mockMvc.perform(post("/subtask/1/co2-changed")
+                .session(session)
+                .param("CO2e", "5"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/subtask/1"));
+    }
+
+    @Test
+    void saveCO2ExpectFalse() throws Exception {
+        when(projectService.updateCO2e(1,4)).thenReturn(false);
+        mockMvc.perform(post("/subtask/1/co2-changed")
+                .session(session)
+                .param("CO2e", "4"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/subtask/1/change-co2"));
     }
 
 }

@@ -18,16 +18,28 @@
             <button>Delete subproject</button>
         </a>
         <p th:text="'Estimated time: ' + ${subproject.totalEstimatedHours} + ' hours.'"></p>
+        <p th:text="'Spent time: ' + ${subproject.totalSpentHours} + ' hours.'"></p>
+        <p th:text="'CO2e: ' + ${subproject.totalCO2E} + ' kg.'"></p>
+        <p th:text="'Percentage Done: ' + ${subproject.PercentageDone} + ' %'"></p>
+
+
         <table>
             <tr>
                 <th>Tasks</th>
                 <th>Deadline</th>
-                <th>Estimated time</th>
+                <th>Estimated Time</th>
+                <th>Spent Time</th>
+                <th>Percentage Done</th>
+                <th>CO2 Used</th>
             </tr>
             <tr th:each="task : ${subproject.tasks}">
                 <td><a th:href="@{'/task/' + ${task.taskID}}" th:text="${task.title}"></a></td>
                 <td th:text="${task.deadline}"></td>
                 <td th:text="${task.totalEstimatedHours} + ' hours'"></td>
+                <td th:text="${task.totalSpentHours} + ' hours'"></td>
+                <td th:text="${task.totalCO2E} + ' kg'"></td>
+                <td th:text="${task.PercentageDone} + '%'"></td>
+
             </tr>
         </table>
         <a th:href="@{'/subproject/' + ${subproject.subprojectID} + '/create-task'}">

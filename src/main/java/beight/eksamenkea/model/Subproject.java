@@ -32,6 +32,30 @@ public class Subproject {
         return sum;
     }
 
+    public float getTotalSpentHours(){
+        float sum = 0;
+        for (Task task : tasks) {
+            sum += task.getTotalSpentHours();
+        }
+        return sum;
+    }
+
+    public float getTotalCO2E(){
+        float sum = 0;
+        for (Task task : tasks) {
+            sum += task.getTotalCO2E();
+        }
+        return sum;
+    }
+
+    public int getPercentageDone() {
+        int sum = 0;
+        for (Task task : tasks) {
+            sum += task.getPercentageDone();
+        }
+        return sum;
+    }
+
     public int getProjectID() {
         return projectID;
     }

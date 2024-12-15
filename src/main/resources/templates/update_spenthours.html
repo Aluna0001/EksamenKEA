@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css">
+    <title>Change Time Spent</title>
+</head>
+<body>
+<th:block th:replace="~{darkmode :: base}">
+
+    <th:block th:fragment="content">
+        <h1 th:text="'Change time spent on Subtask'"></h1>
+        <form action="@{'/subtask/' + ${subtask.subtaskID} + '/spenthours-changed'}" method="post">
+            <input type="hidden" name="subTaskID" th:value="${subtask.subtaskID}">
+            <label>Spent Hours: <input name="spent_time_hours" type="number" min="0"></label><br>
+            <label>Spent Minutes: <input name="spent_time_minutes" type="number" min="0" max="59"></label><br>
+            <button type="submit">Save changes</button>
+        </form>
+        <a th:href="@{'/task/' + ${subtask.taskID}}">
+            <button>Cancel</button>
+        </a>
+    </th:block>
+</th:block>
+</body>
+</html>

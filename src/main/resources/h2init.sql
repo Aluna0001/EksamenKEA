@@ -30,6 +30,9 @@ CREATE TABLE subtask(
     title VARCHAR(20) NOT NULL,
     estimated_hours FLOAT NOT NULL,
     task_id INT NOT NULL,
+    spent_hours FLOAT,
+    co2e FLOAT,
+    percentage_done INT,
     FOREIGN KEY(task_id) REFERENCES task(task_id) ON DELETE CASCADE
 );
 
@@ -37,4 +40,4 @@ INSERT INTO user_profile (username, encoded_password, darkmode) VALUES ('jeha00'
 INSERT INTO project (title) VALUES ('The project');
 INSERT INTO subproject (project_id, title) VALUES (1, 'The subproject');
 INSERT INTO task (subproject_id, title, deadline) VALUES (1, 'The task', NOW());
-INSERT INTO subtask (task_id, title, estimated_hours) VALUES (1, 'The subtask', 3);
+INSERT INTO subtask (task_id, title, estimated_hours, spent_hours, co2e, percentage_done) VALUES (1, 'The subtask', 3,2,5,90);
