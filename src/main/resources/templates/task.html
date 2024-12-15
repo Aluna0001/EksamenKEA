@@ -11,6 +11,10 @@
     <th:block th:fragment="content">
         <h1>Task Details</h1>
         <h2 th:text="${task.title}"></h2>
+        <p th:text="'CO2e: ' + ${task.totalCO2E} + ' kg.'"></p>
+        <p th:text="'Percentage Done: ' + ${task.PercentageDone} + '%'"></p>
+        <p th:text="'Spent hours: ' + ${task.totalSpentHours} + ' hours.'"></p>
+
         <a th:href="@{'/subproject/' + ${task.subprojectID} + '/task/' + ${task.taskID} + '/delete'}">
             <button>Delete task</button>
         </a>
@@ -20,7 +24,10 @@
 
             <li th:each="subtask : ${task.subtasks}">
                 <a th:href="@{'/subtask/' + ${subtask.subtaskID}}" th:text="${subtask.title}"></a> -
-                <span th:text="${subtask.estimatedHours}"></span>
+                <span th:text="${subtask.estimatedHours} + ' hours'"></span>
+                <span th:text="${subtask.spentHours} + ' hours'"></span>
+                <span th:text="${subtask.CO2e} + ' ton'"></span>
+                <span th:text="${subtask.percentageDone} + ' %'"></span>
             </li>
 
         <a th:href="@{'/task/' + ${task_id} + '/create-subtask'}">

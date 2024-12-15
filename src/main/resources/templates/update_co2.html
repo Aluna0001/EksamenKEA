@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css">
+    <title>Change CO2e Spent</title>
+</head>
+<body>
+<th:block th:replace="~{darkmode :: base}">
+
+    <th:block th:fragment="content">
+        <h1 th:text="'Change CO2e spent on Subtask'"></h1>
+        <form action="@{'/subtask/' + ${subtask.subtaskID} + '/co2-changed'}" method="post">
+            <input type="hidden" name="subTaskID" th:value="${subtask.subtaskID}">
+            <label>Spent CO2e: <input name="CO2e" type="number" min="0"></label><br>
+            <button type="submit">Save changes</button>
+        </form>
+        <a th:href="@{'/task/' + ${subtask.taskID}}">
+            <button>Cancel</button>
+        </a>
+    </th:block>
+</th:block>
+</body>
+</html>

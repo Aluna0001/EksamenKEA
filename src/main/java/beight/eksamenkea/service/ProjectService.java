@@ -5,6 +5,7 @@ import beight.eksamenkea.repository.ProjectRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class ProjectService {
         return projectRepository.readUserProfile(username);
     }
 
-    public List<Project> getAllProjects(){
+    public List<Project> getAllProjects() {
         return projectRepository.readAllProjects();
     }
 
@@ -56,20 +57,28 @@ public class ProjectService {
         return projectRepository.createTask(subprojectID, title, deadline);
     }
 
-    public Task getTask(int task_id){
+    public Task getTask(int task_id) {
         return projectRepository.readTask(task_id);
     }
 
     public boolean updateTask(int taskID, String title, LocalDateTime deadline) {
-        return projectRepository.updateTask(taskID,title,deadline);
+        return projectRepository.updateTask(taskID, title, deadline);
     }
 
-    public boolean updateSubTask(int taskID, String title, float estimatedHours) {
-        return projectRepository.updateSubTask(taskID,title,estimatedHours);
+    public boolean updateSubTask(int taskID,
+                                 String title,
+                                 float estimatedHours,
+                                 float CO2e,
+                                 int percentageDone,
+                                 float spentHours) {
+        return projectRepository.updateSubTask(taskID, title, estimatedHours, CO2e,percentageDone, spentHours);
     }
 
-    public boolean createSubTask(int taskID, String title, int estimated_time_hours, int estimated_time_minutes) {
-        float estimatedHours = (estimated_time_hours+(estimated_time_minutes/60f));
+    public boolean createSubTask(int taskID,
+                                 String title,
+                                 int estimated_time_hours,
+                                 int estimated_time_minutes) {
+        float estimatedHours = (estimated_time_hours + (estimated_time_minutes / 60f));
         return projectRepository.createSubtask(taskID, title, estimatedHours);
     }
 
@@ -91,10 +100,23 @@ public class ProjectService {
     }
 
     public void toggleDarkMode(UserProfile userProfile) {
-        if (projectRepository.toggleDarkMode(userProfile.getUsername(),!userProfile.isDarkmode())) {
+        if (projectRepository.toggleDarkMode(userProfile.getUsername(), !userProfile.isDarkmode())) {
             userProfile.toggleDarkMode();
         }
     }
+
+    public boolean updateSpentHours(int id, float spentHours) {
+        return projectRepository.updateSpentHours(id,spentHours);
+    }
+
+    public boolean updateCO2e(int id, float CO2e){
+        return projectRepository.updateCO2e(id,CO2e);
+    }
+
+
+
+
+
 }
 
 

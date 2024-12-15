@@ -65,7 +65,7 @@ public class ProjectRepositoryTests {
 
     @Test
     void createTask() {
-        assertThrows(DataIntegrityViolationException.class, () -> projectRepository.createTask(1,null, LocalDateTime.now()));
+        assertThrows(DataIntegrityViolationException.class, () -> projectRepository.createTask(1, null, LocalDateTime.now()));
         assertThrows(DataIntegrityViolationException.class, () -> projectRepository.createTask(2, "test", LocalDateTime.now()));
         assertTrue(projectRepository.createTask(1, "test", LocalDateTime.now()));
     }
@@ -110,7 +110,28 @@ public class ProjectRepositoryTests {
 
     @Test
     void toggleDarkMode() {
-        assertTrue(projectRepository.toggleDarkMode("jeha00",true));
-        assertTrue(projectRepository.toggleDarkMode("jeha00",false));
+        assertTrue(projectRepository.toggleDarkMode("jeha00", true));
+        assertTrue(projectRepository.toggleDarkMode("jeha00", false));
     }
+
+    @Test
+    void readSpentHours() {
+        assertEquals(2, projectRepository.readSpentHours(1));
+    }
+
+    @Test
+    void updateSpentHours() {
+        assertTrue(projectRepository.updateSpentHours(1, 2));
+    }
+    @Test
+    void readCO2e() {
+        assertEquals(5, projectRepository.readCO2e(1));
+    }
+
+    @Test
+    void updateCO2e() {
+        assertTrue(projectRepository.updateCO2e(1, 2));
+    }
+
+
 }
