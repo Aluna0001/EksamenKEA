@@ -9,37 +9,33 @@
 
 <th:block th:replace="~{darkmode :: base}">
     <th:block th:fragment="content">
-
-        <h1 th:text="'Subproject: ' + ${subproject.title}"></h1>
+        <h1 th:text="${subproject.title}"></h1>
+        <table>
+            <tr><td>Subproject progress</td><td><progress max="100" th:value="${subproject.percentageDone}"></progress></td></tr>
+            <tr><td>Preliminary estimated time</td><td th:text="${subproject.formatEstimatedHours} + ' hours'"></td></tr>
+            <tr><td>Spent time</td><td th:text="${subproject.formatSpentHours} + ' hours'"></td></tr>
+            <tr><td>Spent CO2e</td><td th:text="${subproject.formatKgCO2e} + ' kg'"></td></tr>
+        </table>
         <a th:href="@{'/subproject/' + ${subproject.subprojectID} + '/change-title'}">
             <button>Edit title</button>
         </a>
-        <a th:href="@{'/project/' + ${subproject.projectID} + '/subproject/' + ${subproject.subprojectID} + '/delete'}">
-            <button>Delete subproject</button>
+        <a th:href="@{'/subproject/' + ${subproject.subprojectID} + '/delete'}">
+            <button>Delete this subproject</button>
         </a>
-        <p th:text="'Estimated time: ' + ${subproject.totalEstimatedHours} + ' hours.'"></p>
-        <p th:text="'Spent time: ' + ${subproject.totalSpentHours} + ' hours.'"></p>
-        <p th:text="'CO2e: ' + ${subproject.totalCO2E} + ' kg.'"></p>
-        <p th:text="'Percentage Done: ' + ${subproject.PercentageDone} + ' %'"></p>
-
-
+        <h2>Tasks of this subproject</h2>
         <table>
             <tr>
-                <th>Tasks</th>
-                <th>Deadline</th>
-                <th>Estimated Time</th>
-                <th>Spent Time</th>
-                <th>Percentage Done</th>
-                <th>CO2 Used</th>
+                <th>Task</th>
+                <th>Spent CO2e</th>
+                <th colspan="2">Deadline</th>
+                <th>Progress</th>
             </tr>
             <tr th:each="task : ${subproject.tasks}">
                 <td><a th:href="@{'/task/' + ${task.taskID}}" th:text="${task.title}"></a></td>
-                <td th:text="${task.deadline}"></td>
-                <td th:text="${task.totalEstimatedHours} + ' hours'"></td>
-                <td th:text="${task.totalSpentHours} + ' hours'"></td>
-                <td th:text="${task.totalCO2E} + ' kg'"></td>
-                <td th:text="${task.PercentageDone} + '%'"></td>
-
+                <td th:text="${task.formatKgCO2e} + ' kg'"></td>
+                <td th:text="${passed} ? 'Passed' : ${task.date}"></td>
+                <td th:text="${passed} ? '' : ${task.time}"></td>
+                <td><progress max="100" th:value="${task.percentageDone}"></progress></td>
             </tr>
         </table>
         <a th:href="@{'/subproject/' + ${subproject.subprojectID} + '/create-task'}">

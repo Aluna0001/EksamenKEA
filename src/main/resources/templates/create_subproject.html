@@ -13,11 +13,11 @@
         <h1>Create subproject</h1>
         <form action="/subproject-created" method="post">
             <input type="hidden" name="id" th:value="${projectID}">
-            <label>Title: <input name="title" autofocus></label><br>
-            <button type="submit">Save new subproject</button>
+            <label>Title: <input name="title" required></label>
+            <button type="submit">Save</button>
         </form>
         <a th:href="@{'/project/' + ${projectID}}">
-            <button>Return to project</button>
+            <button>Cancel</button>
         </a>
     </th:block>
 </th:block>

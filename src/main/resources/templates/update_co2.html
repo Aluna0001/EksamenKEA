@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/css">
-    <title>Change CO2e Spent</title>
+    <title th:text="(${add} ? 'Add ' : 'Replace ') + ' CO2e'"></title>
 </head>
 <body>
 <th:block th:replace="~{darkmode :: base}">
-
     <th:block th:fragment="content">
-        <h1 th:text="'Change CO2e spent on Subtask'"></h1>
-        <form action="@{'/subtask/' + ${subtask.subtaskID} + '/co2-changed'}" method="post">
-            <input type="hidden" name="subTaskID" th:value="${subtask.subtaskID}">
-            <label>Spent CO2e: <input name="CO2e" type="number" min="0"></label><br>
-            <button type="submit">Save changes</button>
+        <h1 th:text="(${add} ? 'Add ' : 'Replace ') + 'CO2e ' + (${add} ? 'to ' : 'of ') + ${subtask.title}"></h1>
+        <form action="/co2e-changed" method="post">
+            <input type="hidden" name="id" th:value="${subtask.subtaskID}">
+            <input type="hidden" name="add" th:value="${add}">
+            <label th:if="${add}">Add CO2e: <input class="wide" name="CO2e" type="number" min="0" step="0.01" required> kg</label>
+            <label th:unless="${add}">Edit CO2e: <input class="wide" name="CO2e" type="number" min="0" step="0.01" th:value="${subtask.kgCO2e}" required> kg</label>
+            <button type="submit">Save</button>
         </form>
-        <a th:href="@{'/task/' + ${subtask.taskID}}">
+        <a th:href="@{'/subtask/' + ${subtask.subtaskID}}">
             <button>Cancel</button>
         </a>
     </th:block>

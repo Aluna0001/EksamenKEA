@@ -3,27 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/css">
-    <title>Create Task</title>
+    <title>Create task</title>
 </head>
 <body>
 <th:block th:replace="~{darkmode :: base}">
-
     <th:block th:fragment="content">
-        <h1>New Task</h1>
+        <h1>Create task</h1>
         <form action="/task-created" method="post">
             <input type="hidden" name="id" th:value="${subprojectID}">
-            <label>Title: <input name="title" autofocus></label><br>
-            <label>Deadline: <input name="deadline" type="datetime-local"></label>
-
-
+            <label>Title: <input name="title" required></label><br>
+            <label>Deadline: <input name="deadline" type="datetime-local" th:min="${now}" th:value="${now}" required></label>
             <button type="submit">Save</button>
         </form>
-        <hr>
         <a th:href="@{'/subproject/' + ${subprojectID}}">
             <button>Cancel</button>
         </a>
     </th:block>
 </th:block>
-
 </body>
 </html>

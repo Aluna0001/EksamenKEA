@@ -3,28 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/css">
-    <title>Update Subtask</title>
+    <title th:text="(${add} ? 'Add ' : 'Replace ') + (${estimated} ? 'estimated' : 'spent') + ' time'"></title>
 </head>
 <body>
 <th:block th:replace="~{darkmode :: base}">
-
     <th:block th:fragment="content">
-        <h1>Edit Subtask</h1>
-        <form th:action="@{'/task/' + ${taskID} + '/update-subtask/' + ${subtaskID}}" method="post">
-            <label>Title: <input name="title" autofocus></label><br>
-
-            <label>Estimated time: <input name="estimated_time_hours" type="number"> hr
-                <input name="estimated_time_minutes" type="number"> min</label><br>
-
-            <label>Spent hours: <input name="spent_time_hours" type="number"> hr
-                <input name="spent_time_minutes" type="number"> min </label>
-
-            <label>CO2 Used: <input name="CO2e" type="number"> </label>
-
+        <h1 th:text="(${add} ? 'Add ' : 'Replace ') + (${estimated} ? 'estimated' : 'spent') + ' time ' + (${add} ? 'to ' : 'of ') + ${subtask.title}"></h1>
+        <p th:unless="${add}" th:text="'Old time: ' + (${estimated} ? ${subtask.formatEstimatedHours} : ${subtask.formatSpentHours}) + ' hours'"></p>
+        <form action="/time-changed" method="post">
+            <input type="hidden" name="id" th:value="${subtask.subtaskID}">
+            <input type="hidden" name="estimated" th:value="${estimated}">
+            <input type="hidden" name="add" th:value="${add}">
+            <label th:if="${add}">Add time: <input name="hours" type="number" min="0" required> hours <input name="minutes" type="number" min="0" max="59" required> minutes</label>
+            <label th:unless="${add}">New time: <input name="hours" type="number" min="0" required> hours <input name="minutes" type="number" min="0" max="59" required> minutes</label>
             <button type="submit">Save</button>
         </form>
-        <hr>
-        <a th:href="@{'/task/' + ${taskID}}">
+        <a th:href="@{'/subtask/' + ${subtask.subtaskID}}">
             <button>Cancel</button>
         </a>
     </th:block>

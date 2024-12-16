@@ -5,7 +5,6 @@ import beight.eksamenkea.repository.ProjectRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -61,24 +60,15 @@ public class ProjectService {
         return projectRepository.readTask(task_id);
     }
 
-    public boolean updateTask(int taskID, String title, LocalDateTime deadline) {
-        return projectRepository.updateTask(taskID, title, deadline);
-    }
-
-    public boolean updateSubTask(int taskID,
-                                 String title,
-                                 float estimatedHours,
-                                 float CO2e,
-                                 int percentageDone,
-                                 float spentHours) {
-        return projectRepository.updateSubTask(taskID, title, estimatedHours, CO2e,percentageDone, spentHours);
+    public boolean updateDeadline(int taskID, LocalDateTime deadline) {
+        return projectRepository.updateDeadline(taskID, deadline);
     }
 
     public boolean createSubTask(int taskID,
                                  String title,
-                                 int estimated_time_hours,
-                                 int estimated_time_minutes) {
-        float estimatedHours = (estimated_time_hours + (estimated_time_minutes / 60f));
+                                 int hours,
+                                 int minutes) {
+        float estimatedHours = hours + (minutes / 60f);
         return projectRepository.createSubtask(taskID, title, estimatedHours);
     }
 
@@ -99,23 +89,35 @@ public class ProjectService {
         return projectRepository.readSubtask(subtaskId);
     }
 
-    public void toggleDarkMode(UserProfile userProfile) {
-        if (projectRepository.toggleDarkMode(userProfile.getUsername(), !userProfile.isDarkmode())) {
-            userProfile.toggleDarkMode();
+    public void toggleDarkMode(UserProfile userProfile, boolean switchToDarkMode) {
+        if (projectRepository.toggleDarkMode(userProfile.getUsername(), switchToDarkMode)) {
+            userProfile.toggleDarkMode(switchToDarkMode);
         }
     }
 
-    public boolean updateSpentHours(int id, float spentHours) {
-        return projectRepository.updateSpentHours(id,spentHours);
+    public boolean updateHours(int id, int hours, int minutes, boolean estimated, boolean add) {
+        float hoursDecimal = hours + (minutes / 60f);
+        if (estimated && add) return projectRepository.addEstimatedHours(id, hoursDecimal);
+        if (estimated) return projectRepository.updateEstimatedHours(id, hoursDecimal);
+        if (add) return projectRepository.addSpentHours(id, hoursDecimal);
+        return projectRepository.updateSpentHours(id, hoursDecimal);
     }
 
-    public boolean updateCO2e(int id, float CO2e){
+    public boolean updateCO2e(int id, float CO2e, boolean add) {
+        if (add) return projectRepository.addCO2e(id, CO2e);
         return projectRepository.updateCO2e(id,CO2e);
     }
 
-
-
-
+    public String constructReturnUrl(String type, int id) {
+        String superType = switch (type) {
+            case "subtask" -> "task";
+            case "task" -> "subproject";
+            case "subproject" -> "project";
+            default -> "";
+        };
+        if (superType.isBlank()) return "/portfolio";
+        return "/" + superType + "/" + projectRepository.readSuperID(id, type, superType);
+    }
 
 }
 

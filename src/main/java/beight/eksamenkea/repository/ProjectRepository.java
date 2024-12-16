@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Repository;
 
-import java.security.PublicKey;
 import java.sql.ResultSet;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -131,9 +130,7 @@ public class ProjectRepository {
     }
 
     public boolean createSubtask(int taskID, String title, float estimatedHours) {
-        String sql = "INSERT INTO subtask (task_id, title, estimated_hours) VALUES (?, ?, ?)";
-        //jdbcTemplate.update returns int
-        //to return a boolean, > 0 is added at the end, which also makes sure that a change has been made
+        String sql = "INSERT INTO subtask (task_id, title, estimated_hours, spent_hours, kg_CO2_e) VALUES (?, ?, ?, 0, 0)";
         return jdbcTemplate.update(sql, taskID, title, estimatedHours) > 0;
     }
 
@@ -180,32 +177,39 @@ public class ProjectRepository {
         return jdbcTemplate.update(sql, id) > 0;
     }
 
+    public int readSuperID(int id, String type, String superType) {
+        String sql = "SELECT " + superType + "_id FROM " + type + " WHERE " + type + "_id = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, id);
+    }
+
     public Subtask readSubtask(int subtaskID) {
         String sql = "SELECT * FROM subtask WHERE subtask_id = ?";
         return jdbcTemplate.queryForObject(sql,Subtask.ROW_MAPPER,subtaskID);
     }
 
-    public boolean updateTask(int taskID, String title, LocalDateTime deadline) {
-        String sql = "UPDATE task SET title = ?, deadline = ? WHERE task_id = ?";
-        int rowsAffected = jdbcTemplate.update(sql, title, deadline, taskID);
-        return rowsAffected > 0;
+    public boolean updateDeadline(int taskID, LocalDateTime deadline) {
+        String sql = "UPDATE task SET deadline = ? WHERE task_id = ?";
+        return jdbcTemplate.update(sql, deadline, taskID) > 0;
     }
 
-    public boolean updateSubTask(int taskID, String title, float estimatedHours, float CO2E, int percentageDone, float spentHours) {
-        String sql ="UPDATE subtask SET title = ?, estimated_hours = ?, co2e = ?, percentage_done = ?, spent_hours = ?  WHERE subtask_id = ?";
-        int rowsAffected = jdbcTemplate.update(sql, title, estimatedHours, CO2E,percentageDone, spentHours, taskID);
-        return rowsAffected > 0;
+    public boolean addEstimatedHours(int subtaskID, float estimatedHours) {
+        String sql = "UPDATE subtask SET estimated_hours = estimated_hours + ? WHERE subtask_id = ?";
+        return jdbcTemplate.update(sql, estimatedHours, subtaskID) > 0;
+    }
+
+    public boolean updateEstimatedHours(int subtaskID, float estimatedHours) {
+        String sql = "UPDATE subtask SET estimated_hours = ? WHERE subtask_id= ?";
+        return jdbcTemplate.update(sql, estimatedHours, subtaskID) > 0;
     }
 
     public boolean toggleDarkMode(String username, boolean darkMode){
-     String sql = "UPDATE user_profile SET darkmode = ? WHERE username = ?";
-     return jdbcTemplate.update(sql,darkMode,username) > 0;
-
+        String sql = "UPDATE user_profile SET darkmode = ? WHERE username = ?";
+        return jdbcTemplate.update(sql,darkMode,username) > 0;
     }
 
-    public float readSpentHours(int subtaskID){
-        String sql = "SELECT spent_hours FROM subtask WHERE subtask_id = ?";
-        return jdbcTemplate.queryForObject(sql, float.class, subtaskID);
+    public boolean addSpentHours(int subtaskID, float spentHours) {
+        String sql = "UPDATE subtask SET spent_hours = spent_hours + ? WHERE subtask_id = ?";
+        return jdbcTemplate.update(sql, spentHours, subtaskID) > 0;
     }
 
     public boolean updateSpentHours(int subtaskID, float spentHours) {
@@ -214,14 +218,13 @@ public class ProjectRepository {
         return rowsAffected > 0;
     }
 
-    public float readCO2e(int subtaskID) {
-        String sql ="SELECT co2e FROM subtask WHERE subtask_id = ?";
-        return jdbcTemplate.queryForObject(sql, float.class, subtaskID);
+    public boolean addCO2e(int subtaskID, float CO2e) {
+        String sql = "UPDATE subtask SET kg_CO2_e = kg_CO2_e + ? WHERE subtask_id = ?";
+        return jdbcTemplate.update(sql, CO2e, subtaskID) > 0;
     }
 
-
     public boolean updateCO2e(int subtaskID, float co2e) {
-        String sql = "UPDATE subtask SET co2e = ? WHERE subtask_id = ?";
+        String sql = "UPDATE subtask SET kg_CO2_e = ? WHERE subtask_id = ?";
         int rowsAffected = jdbcTemplate.update(sql, co2e, subtaskID);
         return rowsAffected > 0;
     }

@@ -10,10 +10,10 @@
     <th:block th:fragment="content">
         <h1>Create project</h1>
         <form action="/project-created" method="post">
-            <label>Title: <input name="title" autofocus></label><br>
-            <button type="submit">Save new project</button>
+            <label>Title: <input name="title" required></label>
+            <button type="submit">Save</button>
         </form>
-    <a href="/projects"><button>Return to projects</button></a>
+    <a href="/portfolio"><button>Cancel</button></a>
     </th:block>
 </th:block>
 </body>

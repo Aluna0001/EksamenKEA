@@ -3,17 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="/css">
-  <title>Projects</title>
+  <title>Portfolio</title>
 </head>
 <body>
 <th:block th:replace="~{darkmode :: base}">
   <th:block th:fragment="content">
-    <h1>Projects</h1>
-    <table>
-      <tr th:each="project : ${projects}">
-        <td><a th:href="@{'/project/' + ${project.projectID}}" th:text="${project.title}"></a></td>
-      </tr>
-    </table>
+    <h1>Portfolio</h1>
+      <div th:each="project : ${projects}">
+        <a th:href="@{'/project/' + ${project.projectID}}"><p th:text="${project.title}"></p></a>
+      </div>
     <a th:href="@{/create-project}"><button>New project</button></a>
   </th:block>
 </th:block>

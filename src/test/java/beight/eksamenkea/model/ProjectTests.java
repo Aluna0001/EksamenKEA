@@ -25,6 +25,6 @@ public class ProjectTests {
         subproject2.getTasks().add(task2);
         project.getSubprojects().add(subproject1);
         project.getSubprojects().add(subproject2);
-        assertEquals(6.2f, project.getTotalEstimatedHours());
+        assertEquals(6.2f, project.getEstimatedHours());
     }
 }
