@@ -110,13 +110,13 @@ public class ProjectRepositoryTests {
 
     @Test
     void toggleDarkMode() {
-        assertTrue(projectRepository.toggleDarkMode("jeha00", true));
-        assertTrue(projectRepository.toggleDarkMode("jeha00", false));
+        assertTrue(projectRepository.toggleDarkMode("admin", true));
+        assertTrue(projectRepository.toggleDarkMode("admin", false));
     }
 
     @Test
-    void readSpentHours() {
-        assertEquals(2, projectRepository.readSpentHours(1));
+    void addSpentHours() {
+        assertTrue(projectRepository.addSpentHours(1, 2));
     }
 
     @Test
@@ -124,8 +124,8 @@ public class ProjectRepositoryTests {
         assertTrue(projectRepository.updateSpentHours(1, 2));
     }
     @Test
-    void readCO2e() {
-        assertEquals(5, projectRepository.readCO2e(1));
+    void addCO2e() {
+        assertTrue(projectRepository.addCO2e(1, 2));
     }
 
     @Test

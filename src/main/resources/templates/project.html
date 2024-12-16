@@ -8,46 +8,39 @@
 </head>
 <body>
 <th:block th:replace="~{darkmode :: base}">
-
     <th:block th:fragment="content">
-        <h1 th:text="'Project: ' + ${project.title}"></h1>
+        <h1 th:text="${project.title}"></h1>
+        <table>
+            <tr><td>Project progress</td><td><progress max="100" th:value="${project.percentageDone}"></progress></td></tr>
+            <tr><td>Preliminary estimated time</td><td th:text="${project.formatEstimatedHours} + ' hours'"></td></tr>
+            <tr><td>Spent time</td><td th:text="${project.formatSpentHours} + ' hours'"></td></tr>
+            <tr><td>Spent CO2e</td><td th:text="${project.formatKgCO2e} + ' kg'"></td></tr>
+        </table>
         <a th:href="@{'/project/' + ${project.projectID} + '/change-title'}">
             <button>Edit title</button>
         </a>
         <a th:href="@{'/project/' + ${project.projectID} + '/delete'}">
-            <button>Delete project</button>
+            <button>Delete this project</button>
         </a>
-        <p th:text="'Estimated time: ' + ${project.totalEstimatedHours} + ' hours.'"></p>
-        <p th:text="'Spent time: ' + ${project.totalSpentHours} + ' hours.'"></p>
-        <p th:text="'CO2e: ' + ${project.totalCO2E} + ' kg.'"></p>
-        <p th:text="'Percentage Done: ' + ${project.PercentageDone} + '%'"></p>
-
-
+        <h2>Subprojects of this project</h2>
         <table>
             <tr>
-                <th>Subprojects</th>
-                <th>Estimated time</th>
-                <th>CO2e</th>
-                <th>Percentage Done</th>
-                <th>Spent time</th>
-
+                <th>Title</th>
+                <th>Spent CO2e</th>
+                <th>Progress</th>
             </tr>
             <tr th:each="subproject : ${project.subprojects}">
                 <td><a th:href="@{'/subproject/' + ${subproject.subprojectID}}" th:text="${subproject.title}"></a></td>
-                <td th:text="${subproject.totalEstimatedHours} + ' hours'"></td>
-                <td th:text="${subproject.totalCO2E} + ' kg'"></td>
-                <td th:text="${subproject.PercentageDone} + ' %'"></td>
-                <td th:text="${subproject.totalSpentHours} + ' hours'"></td>
-
+                <td th:text="${subproject.formatKgCO2e} + ' kg'"></td>
+                <td><progress max="100" th:value="${subproject.percentageDone}"></progress></td>
             </tr>
         </table>
         <a th:href="@{'/project/' + ${project.projectID} + '/create-subproject'}">
             <button>New subproject</button>
         </a>
-        <a href="/projects">
-            <button>Return to projects</button>
+        <a href="/portfolio">
+            <button>Return to portfolio</button>
         </a>
-
     </th:block>
 </th:block>
 </body>

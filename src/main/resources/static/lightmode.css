@@ -1,24 +1,45 @@
-/* Generelle farver til light mode */
+
 body {
     background-color: #ffffff;
     color: #1e1e1e;
     font-family: Montserrat, sans-serif;
-    margin: 0;
-    padding: 0;
 }
 
-/* Hovedoverskrift */
-h1 {
-    font-size: 2.5rem;
+label {
     font-weight: bold;
     color: #0056a6;
-    margin: 20px;
+    text-align: center;
+    white-space: pre;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 8px;
+}
+
+input[type=number] {
+    width: 30px;
+}
+
+input[type=number].wide {
+    width: 50px;
+}
+
+p {
+    color: #0056a6;
     text-align: center;
 }
 
-/* Toggle-knap styling */
+h1 {
+    font-weight: bold;
+    color: #0056a6;
+    text-align: center;
+}
+
 button {
-    background-color: #ffffff;
+    background-color: lightblue;
     color: #0056a6;
     border: 2px solid #0056a6;
     padding: 10px 20px;
@@ -26,7 +47,7 @@ button {
     font-size: 1rem;
     cursor: pointer;
     display: inline-block;
-    margin: 20px auto;
+    margin: 10px;
 }
 
 button:hover {
@@ -34,18 +55,23 @@ button:hover {
     color: #ffffff;
 }
 
+button.fit {
+    margin: 0;
+}
 
 footer {
-    background-color: #f4f4f4;
+    background-color: lightblue;
     color: #0056a6;
     text-align: center;
-    padding: 20px 0;
     position: fixed;
     bottom: 0;
     width: 100%;
 }
 
-/* Links */
+form.footer {
+    display: inline-block;
+}
+
 a {
     color: #0056a6;
     text-decoration: none;
@@ -55,10 +81,38 @@ a:hover {
     text-decoration: underline;
 }
 
-/* Hovedindhold */
 main {
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
     text-align: center;
+}
+
+table {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #0056a6;
+}
+
+td.fit {
+    padding: 5px;
+}
+
+progress {
+    background-color: #eee;
+}
+
+progress[value]::-webkit-progress-bar {
+    background-color: lightblue;
+    border: 1px solid #0056a6;
+}
+
+progress[value]::-webkit-progress-value {
+    background-color: #0056a6;
 }

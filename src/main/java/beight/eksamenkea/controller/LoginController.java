@@ -27,7 +27,7 @@ public class LoginController {
                         @RequestParam String password) {
         if (projectService.login(username, password)) {
             session.setAttribute("userProfile", projectService.readUserProfile(username));
-            return "redirect:/projects";
+            return "redirect:/portfolio";
         }
         return "redirect:/";
     }

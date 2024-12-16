@@ -29,11 +29,11 @@ public class UserProfile {
         return username;
     }
 
-    public boolean isDarkmode() {
+    public boolean darkModeIsOn() {
         return darkmode;
     }
 
-    public void toggleDarkMode() {
-        this.darkmode = !darkmode;
+    public void toggleDarkMode(boolean on) {
+        this.darkmode = on;
     }
 }

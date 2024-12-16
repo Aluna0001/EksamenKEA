@@ -7,13 +7,12 @@
 </head>
 <body>
 <th:block th:replace="~{darkmode :: base}">
-
     <th:block th:fragment="content">
         <h1 th:text="'Change ' + ${type} + ' title'"></h1>
         <form action="/title-changed" method="post">
             <input type="hidden" name="type" th:value="${type}">
             <input type="hidden" name="id" th:value="${id}">
-            <label>Title: <input name="title" th:value="${title}"></label><br>
+            <label>Title: <input name="title" th:value="${title}" required></label>
             <button type="submit">Save changes</button>
         </form>
         <a th:href="@{'/' + ${type} + '/' + ${id}}">

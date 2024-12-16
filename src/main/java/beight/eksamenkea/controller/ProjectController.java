@@ -1,9 +1,9 @@
 package beight.eksamenkea.controller;
 
+import beight.eksamenkea.model.Task;
 import beight.eksamenkea.model.UserProfile;
 import beight.eksamenkea.service.ProjectService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,16 +20,14 @@ public class ProjectController {
     }
 
     @ModelAttribute
-    public void addAttributes(HttpSession session, HttpServletRequest request) {
-        if (session.getAttribute("userProfile") == null) throw new RuntimeException("Not logged in.");
-        String url = request.getRequestURI();
-        //gem ikke seneste location som en af de her i session
-        if (!url.equals("/css") && !url.equals("/toggle-darkmode")) {
-            session.setAttribute("currentLocation", url);
-        }
+    public void addAttributes(HttpServletRequest request,
+                              @SessionAttribute UserProfile userProfile, // Important: triggers ServletRequestBindingException, see ExceptionControllerAdvice
+                              Model model) {
+        model.addAttribute("currentUrl", request.getRequestURI());
+        model.addAttribute("darkModeIsOn", userProfile.darkModeIsOn());
     }
 
-    @GetMapping("/projects")
+    @GetMapping("/portfolio")
     public String viewProjects(Model model) {
         model.addAttribute("projects", projectService.getAllProjects());
         return "projects";
@@ -41,23 +39,18 @@ public class ProjectController {
         return "project";
     }
 
-
     @PostMapping("/toggle-darkmode")
     public String toggleDarkMode(@SessionAttribute UserProfile userProfile,
-                                 @SessionAttribute String currentLocation) {
-        projectService.toggleDarkMode(userProfile);
-        //redirecter til der hvor den kommer fra og ikke "toggle-darkmode"
-        return "redirect:" + currentLocation;
-
+                                 @RequestParam String currentUrl,
+                                 @RequestParam boolean switchToDarkMode) {
+        projectService.toggleDarkMode(userProfile, switchToDarkMode);
+        return "redirect:" + currentUrl;
     }
 
     @GetMapping("/css")
     public String getCSS(@SessionAttribute UserProfile userProfile) {
-        if (userProfile.isDarkmode()) {
-            return "redirect:/darkmode.css";
-        } else {
-            return "redirect:/lightmode.css";
-        }
+        if (userProfile.darkModeIsOn()) return "redirect:/darkmode.css";
+        return "redirect:/lightmode.css";
     }
 
     @GetMapping("/create-project")
@@ -67,7 +60,7 @@ public class ProjectController {
 
     @PostMapping("/project-created")
     public String saveNewProject(@RequestParam String title) {
-        if (projectService.createProject(title)) return "redirect:/projects";
+        if (projectService.createProject(title)) return "redirect:/portfolio";
         return "redirect:/create-project";
     }
 
@@ -93,6 +86,7 @@ public class ProjectController {
     @GetMapping("/subproject/{id}/create-task")
     public String createTask(@PathVariable int id, Model model) {
         model.addAttribute("subprojectID", id);
+        model.addAttribute("now", LocalDateTime.now().toString().substring(0, 16));
         return "create_task";
     }
 
@@ -101,32 +95,28 @@ public class ProjectController {
                               @RequestParam String title,
                               @RequestParam LocalDateTime deadline) {
         if (projectService.createTask(id, title, deadline)) return "redirect:/subproject/" + id;
-        if (projectService.updateTask(id, title, deadline)) return "redirect:/subproject/" + id + "/subprojectID";
         return "redirect:/subproject/" + id + "/create-task";
     }
 
-    @GetMapping("/task/{task_id}")
-    public String readTask(@PathVariable int task_id, Model model) {
-        model.addAttribute("task", projectService.getTask(task_id));
+    @GetMapping("/task/{id}")
+    public String readTask(@PathVariable int id, Model model) {
+        model.addAttribute("task", projectService.getTask(id));
         return "task";
     }
 
-    @GetMapping("/subproject/{subprojectID}/update-task/{taskID}")
-    public String updateTask(@PathVariable int subprojectID,
-                             @PathVariable int taskID,
+    @GetMapping("/task/{id}/change-deadline")
+    public String updateTask(@PathVariable int id,
                              Model model) {
-        model.addAttribute("task", projectService.getTask(taskID));
-        model.addAttribute("subprojectID", subprojectID);
+        model.addAttribute("task", projectService.getTask(id));
+        model.addAttribute("now", LocalDateTime.now().toString().substring(0, 16));
         return "update_task";
     }
 
-    @PostMapping("/subproject/{subprojectID}/update-task/{taskID}")
-    public String taskUpdated(@PathVariable int subprojectID,
-                              @PathVariable int taskID,
-                              @RequestParam String title,
+    @PostMapping("/deadline-changed")
+    public String taskUpdated(@RequestParam int id,
                               @RequestParam LocalDateTime deadline) {
-        if (projectService.updateTask(taskID, title, deadline)) return "redirect:/subproject/" + subprojectID;
-        return "redirect:/subproject/" + subprojectID + "/update-task/" + taskID;
+        if (projectService.updateDeadline(id, deadline)) return "redirect:/task/" + id;
+        return "redirect:/task/" + id + "/change-deadline";
     }
 
     @GetMapping("/task/{id}/create-subtask")
@@ -138,10 +128,9 @@ public class ProjectController {
     @PostMapping("/subtask-created")
     public String saveNewSubTask(@RequestParam int id,
                                  @RequestParam String title,
-                                 @RequestParam(defaultValue = "0") int estimated_time_hours,
-                                 @RequestParam(defaultValue = "0") int estimated_time_minutes){
-        if (projectService.createSubTask(id, title, estimated_time_hours, estimated_time_minutes))
-            return "redirect:/task/" + id;
+                                 @RequestParam int hours,
+                                 @RequestParam int minutes){
+        if (projectService.createSubTask(id, title, hours, minutes)) return "redirect:/task/" + id;
         return "redirect:/task/" + id + "/create-subtask";
     }
 
@@ -151,69 +140,44 @@ public class ProjectController {
         return "subtask";
     }
 
-    @GetMapping("/task/{taskID}/update-subtask/{subtaskID}")
-    public String updateSubTask(@PathVariable int taskID,
-                                @PathVariable int subtaskID,
-                                Model model) {
-        model.addAttribute("subtask", projectService.getSubtask(subtaskID));
-        model.addAttribute("taskID", taskID);
+    @GetMapping("/subtask/{id}/{addOrReplace}-{estimatedOrSpent}-time")
+    public String updateTime(@PathVariable int id,
+                               @PathVariable String addOrReplace,
+                               @PathVariable String estimatedOrSpent,
+                               Model model) {
+        if (!addOrReplace.equals("add") && !addOrReplace.equals("replace")) return "redirect:/subtask/" + id;
+        model.addAttribute("add", addOrReplace.equals("add"));
+        model.addAttribute("estimated", estimatedOrSpent.equals("estimated"));
+        model.addAttribute("subtask",projectService.getSubtask(id));
         return "update_subtask";
     }
 
-    @PostMapping("/task/{taskID}/update-subtask/{subtaskID}")
-    public String subTaskUpdated(@PathVariable int taskID,
-                                 @PathVariable int subtaskID,
-                                 @RequestParam String title,
-                                 @RequestParam(defaultValue = "0") int estimated_time_hours,
-                                 @RequestParam(defaultValue = "0") int estimated_time_minutes,
-                                 @RequestParam(defaultValue = "0") int percentage_done,
-                                 @RequestParam (defaultValue = "0") float coe2,
-                                 @RequestParam(defaultValue = "0") int spent_time_hours,
-                                 @RequestParam(defaultValue = "0") int spent_time_minutes) {
-        float estimated_hours = estimated_time_hours + (estimated_time_minutes / 60.0f);
-        float spent_hours = spent_time_hours + (spent_time_minutes / 60.0f);
-        if (projectService.updateSubTask(taskID, title,
-                estimated_hours, coe2,percentage_done,spent_hours)) return "redirect:/task/" + taskID;
-        return "redirect:/task/" + taskID + "/update-subtask/" + subtaskID;
+    @PostMapping("/time-changed")
+    public String saveTime(@RequestParam int id,
+                               @RequestParam boolean estimated,
+                               @RequestParam boolean add,
+                               @RequestParam int hours,
+                               @RequestParam int minutes) {
+        if (projectService.updateHours(id, hours, minutes, estimated, add)) return "redirect:/subtask/" + id;
+        return "redirect:/subtask/" + id + "/" + (add ? "add" : "replace") +  "-" + (estimated ? "estimated" : "spent") + "-time";
     }
 
-    //spent hours
-    @GetMapping("/subtask/{subtaskID}/change-spenthours")
-    public String changeSpentHours(@PathVariable int subtaskID, Model model) {
-        model.addAttribute("id",subtaskID);
-        model.addAttribute("subtask",projectService.getSubtask(subtaskID));
-        return "update_spenthours";
-    }
-
-    @PostMapping("/subtask/{subtaskID}/spenthours-changed")
-    public String saveSpentHours(@PathVariable int subtaskID,
-                                 @RequestParam(defaultValue = "0") int spent_time_hours,
-                                 @RequestParam(defaultValue = "0") int spent_time_minutes) {
-        float spentHours = spent_time_hours + (spent_time_minutes / 60.0f);
-        boolean updated = projectService.updateSpentHours(subtaskID, spentHours);
-        if (updated) {
-            return "redirect:/subtask/" + subtaskID;
-        } else {
-            return "redirect:/subtask/" + subtaskID + "/change-spenthours";
-        }
-
-    }
-
-    //co2e
-    @GetMapping("/subtask/{subtaskID}/change-co2")
-    public String changeCO2(@PathVariable int subtaskID, Model model) {
-        model.addAttribute("id",subtaskID);
-        model.addAttribute("subtask", projectService.getSubtask(subtaskID));
+    @GetMapping("/subtask/{id}/{addOrReplace}-co2e")
+    public String updateCO2e(@PathVariable int id,
+                              @PathVariable String addOrReplace,
+                              Model model) {
+        if (!addOrReplace.equals("add") && !addOrReplace.equals("replace")) return "redirect:/subtask/" + id;
+        model.addAttribute("add", addOrReplace.equals("add"));
+        model.addAttribute("subtask", projectService.getSubtask(id));
         return "update_co2";
     }
 
-    @PostMapping ("/subtask/{subtaskID}/co2-changed")
-    public String saveCO2(@PathVariable int subtaskID, @RequestParam float CO2e){
-        boolean updated = projectService.updateCO2e(subtaskID, CO2e);
-        if (updated) {
-            return "redirect:/subtask/" + subtaskID;
-        }
-        return "redirect:/subtask/" + subtaskID + "/change-co2";
+    @PostMapping ("/co2e-changed")
+    public String saveCO2e(@RequestParam int id,
+                           @RequestParam boolean add,
+                           @RequestParam float CO2e) {
+        if (projectService.updateCO2e(id, CO2e, add)) return "redirect:/subtask/" + id;
+        return "redirect:/subtask/" + id + "/" + (add ? "add" : "replace") + "-co2e";
     }
 
     @GetMapping("/{type}/{id}/change-title")
@@ -234,35 +198,23 @@ public class ProjectController {
         return "redirect:/" + type + "/" + id + "/change-title";
     }
 
-    @GetMapping("/{supertype}/{superid}/{type}/{id}/delete")
-    public String deleteOption(@PathVariable String supertype,
-                               @PathVariable int superid,
-                               @PathVariable String type,
+    @GetMapping("/{type}/{id}/delete")
+    public String deleteOption(@PathVariable String type,
                                @PathVariable int id,
                                Model model) {
-        model.addAttribute("url", "/" + supertype + "/" + superid);
         model.addAttribute("type", type);
         model.addAttribute("id", id);
         model.addAttribute("title", projectService.getTitle(type, id));
         return "delete";
     }
 
-    @GetMapping("/project/{id}/delete")
-    public String deleteProject(@PathVariable int id, Model model) {
-        model.addAttribute("url", "/projects");
-        model.addAttribute("type", "project");
-        model.addAttribute("id", id);
-        model.addAttribute("title", projectService.getTitle("project", id));
-        return "delete";
-    }
-
     @PostMapping("/deleted")
-    public String deleteConfirmation(@RequestParam String url,
-                                     @RequestParam String type,
+    public String deleteConfirmation(@RequestParam String type,
                                      @RequestParam int id,
                                      @RequestParam(required = false) boolean confirm) {
+        String url = projectService.constructReturnUrl(type, id);
         if (projectService.delete(type, id, confirm)) return "redirect:" + url;
-        return "redirect:" + url + "/" + type + "/" + id + "/delete";
+        return "redirect:/" + type + "/" + id + "/delete";
     }
 }
 
