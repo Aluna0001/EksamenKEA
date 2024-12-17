@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Controller
 public class ProjectController {
@@ -144,7 +145,9 @@ public class ProjectController {
                                @PathVariable String addOrReplace,
                                @PathVariable String estimatedOrSpent,
                                Model model) {
-        if (!addOrReplace.equals("add") && !addOrReplace.equals("replace")) return "redirect:/subtask/" + id;
+        if (!List.of("add", "replace").contains(addOrReplace)
+                || !List.of("estimated", "spent").contains(estimatedOrSpent))
+            throw new RuntimeException("Invalid path variable.");
         model.addAttribute("add", addOrReplace.equals("add"));
         model.addAttribute("estimated", estimatedOrSpent.equals("estimated"));
         model.addAttribute("subtask",projectService.getSubtask(id));
@@ -165,7 +168,7 @@ public class ProjectController {
     public String updateCO2e(@PathVariable int id,
                               @PathVariable String addOrReplace,
                               Model model) {
-        if (!addOrReplace.equals("add") && !addOrReplace.equals("replace")) return "redirect:/subtask/" + id;
+        if (!List.of("add", "replace").contains(addOrReplace)) throw new RuntimeException("Invalid path variable.");
         model.addAttribute("add", addOrReplace.equals("add"));
         model.addAttribute("subtask", projectService.getSubtask(id));
         return "update_co2";

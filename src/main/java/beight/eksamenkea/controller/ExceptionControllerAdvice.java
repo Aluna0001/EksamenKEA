@@ -28,7 +28,7 @@ public class ExceptionControllerAdvice {
 
         // Print exception info to console unless 404
         boolean serverError = true;
-        if (exceptionName.equals("NoResourceFoundException")) {
+        if (exceptionName.equals("NoResourceFoundException") || exceptionMessage.equals("Invalid path variable.")) {
             serverError = false;
         } else {
             e.printStackTrace();

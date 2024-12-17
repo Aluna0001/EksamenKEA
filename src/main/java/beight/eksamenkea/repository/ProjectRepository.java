@@ -159,7 +159,7 @@ public class ProjectRepository {
         return jdbcTemplate.query(sql, resultSetExtractor, task_id);
     }
 
-    public String readTitle(String type, int id) {
+    public String readTitle(String type, int id) throws EmptyResultDataAccessException {
         if (!List.of("project", "subproject", "task", "subtask").contains(type)) return null;
         String sql = "SELECT title FROM " + type + " WHERE " + type + "_id = ?";
         return jdbcTemplate.queryForObject(sql, String.class, id);

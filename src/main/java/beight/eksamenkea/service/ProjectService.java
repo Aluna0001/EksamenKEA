@@ -32,11 +32,15 @@ public class ProjectService {
     }
 
     public Project getProject(int projectID) {
-        return projectRepository.readProject(projectID);
+        Project project = projectRepository.readProject(projectID);
+        if (project == null) throw new RuntimeException("Invalid path variable.");
+        return project;
     }
 
     public Subproject getSubproject(int subprojectID) {
-        return projectRepository.readSubproject(subprojectID);
+        Subproject subproject = projectRepository.readSubproject(subprojectID);
+        if (subproject == null) throw new RuntimeException("Invalid path variable.");
+        return subproject;
     }
 
     public boolean createProject(String title) {
@@ -52,7 +56,9 @@ public class ProjectService {
     }
 
     public Task getTask(int task_id) {
-        return projectRepository.readTask(task_id);
+        Task task = projectRepository.readTask(task_id);
+        if (task == null) throw new RuntimeException("Invalid path variable.");
+        return task;
     }
 
     public boolean updateDeadline(int taskID, LocalDateTime deadline) {
@@ -68,7 +74,12 @@ public class ProjectService {
     }
 
     public String getTitle(String type, int id) {
-        return projectRepository.readTitle(type, id);
+        String title = null;
+        try {
+            title = projectRepository.readTitle(type, id);
+        } catch (EmptyResultDataAccessException e) {}
+        if (title == null) throw new RuntimeException("Invalid path variable.");
+        return title;
     }
 
     public boolean updateTitle(String type, int id, String title) {
@@ -81,7 +92,9 @@ public class ProjectService {
     }
 
     public Subtask getSubtask(int subtaskId) {
-        return projectRepository.readSubtask(subtaskId);
+        Subtask subtask = projectRepository.readSubtask(subtaskId);
+        if (subtask == null) throw new RuntimeException("Invalid path variable.");
+        return subtask;
     }
 
     public void toggleDarkMode(UserProfile userProfile, boolean switchToDarkMode) {
