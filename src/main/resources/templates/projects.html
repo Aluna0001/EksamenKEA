@@ -9,9 +9,10 @@
 <th:block th:replace="~{darkmode :: base}">
   <th:block th:fragment="content">
     <h1>Portfolio</h1>
-      <div th:each="project : ${projects}">
-        <a th:href="@{'/project/' + ${project.projectID}}"><p th:text="${project.title}"></p></a>
-      </div>
+    <p th:if="${projects.isEmpty}">No projects yet.</p>
+    <div th:each="project : ${projects}">
+      <p>&#128279; <a th:href="@{'/project/' + ${project.projectID}}" th:text="${project.title}"></a></p>
+    </div>
     <a th:href="@{/create-project}"><button>New project</button></a>
   </th:block>
 </th:block>

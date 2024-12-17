@@ -19,13 +19,8 @@ public class ProjectService {
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
-    public boolean login(String username, String password) {
-        try {
-            return passwordEncoder.matches(password, projectRepository.readPassword(username));
-        } catch (EmptyResultDataAccessException e) {
-            // Wrong username
-            return false;
-        }
+    public boolean login(String username, String password) throws EmptyResultDataAccessException {
+        return passwordEncoder.matches(password, projectRepository.readPassword(username));
     }
 
     public UserProfile readUserProfile(String username) {
