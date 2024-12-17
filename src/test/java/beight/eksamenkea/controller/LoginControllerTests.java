@@ -34,7 +34,8 @@ class LoginControllerTests {
         when(projectService.login("admin", "bondegaard")).thenReturn(true);
         mockMvc.perform(post("/login")
                         .param("username", "admin")
-                        .param("password", "bondegaard"))
+                        .param("password", "bondegaard")
+                        .param("url", "/portfolio"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/portfolio"));
     }
@@ -44,7 +45,8 @@ class LoginControllerTests {
         when(projectService.login("admin", "bondegard")).thenReturn(false);
         mockMvc.perform(post("/login")
                         .param("username", "admin")
-                        .param("password", "bondegard"))
+                        .param("password", "bondegard")
+                        .param("url", "/portfolio"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("login"))
                 .andExpect(model().attribute("username", "admin"))
@@ -54,8 +56,9 @@ class LoginControllerTests {
     @Test
     void logout() throws Exception {
         mockMvc.perform(get("/logout"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/"));
+                .andExpect(status().isOk())
+                .andExpect(view().name("login"))
+                .andExpect(model().attribute("message", "Logout successful."));
     }
 
 }

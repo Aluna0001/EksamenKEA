@@ -55,9 +55,10 @@ public class ProjectControllerTests {
 
     @Test
     void noAccessWhenNotLoggedIn() throws Exception {
-        mockMvc.perform(get("/portfolio"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/"));
+        mockMvc.perform(get("/project/1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("login"))
+                .andExpect(model().attribute("url", "/project/1"));
     }
 
     @Test

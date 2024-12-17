@@ -19,7 +19,8 @@ public class LoginController {
     }
 
     @GetMapping("/")
-    public String viewFrontpage() {
+    public String viewFrontpage(Model model) {
+        model.addAttribute("url", "/portfolio");
         return "login";
     }
 
@@ -27,6 +28,7 @@ public class LoginController {
     public String login(HttpSession session,
                         @RequestParam String username,
                         @RequestParam String password,
+                        @RequestParam String url,
                         Model model) {
         boolean passwordCorrect = false;
         boolean usernameCorrect = true;
@@ -37,17 +39,20 @@ public class LoginController {
         }
         if (usernameCorrect && passwordCorrect) {
             session.setAttribute("userProfile", projectService.readUserProfile(username));
-            return "redirect:/portfolio";
+            return "redirect:" + url;
         }
         model.addAttribute("message", usernameCorrect ? "Invalid password." : "Invalid username.");
         model.addAttribute("username", username);
+        model.addAttribute("url", url);
         return "login";
     }
 
     @GetMapping("/logout")
-    public String logout(HttpSession session) {
+    public String logout(HttpSession session, Model model) {
         session.invalidate();
-        return "redirect:/";
+        model.addAttribute("message", "Logout successful.");
+        model.addAttribute("url", "/portfolio");
+        return "login";
     }
 
 }
