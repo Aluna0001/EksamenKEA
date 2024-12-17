@@ -45,8 +45,10 @@ class LoginControllerTests {
         mockMvc.perform(post("/login")
                         .param("username", "admin")
                         .param("password", "bondegard"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/"));
+                .andExpect(status().isOk())
+                .andExpect(view().name("login"))
+                .andExpect(model().attribute("username", "admin"))
+                .andExpect(model().attribute("message", "Invalid password."));
     }
 
     @Test
