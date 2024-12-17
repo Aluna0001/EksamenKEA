@@ -26,15 +26,16 @@
         <a th:href="@{'/task/' + ${task.taskID} + '/delete'}">
             <button>Delete this task</button>
         </a>
-        <h2>Subtasks of this task</h2>
-        <table>
+        <p th:if="${task.subtasks.isEmpty}">No subtasks yet.</p>
+        <h2 th:unless="${task.subtasks.isEmpty}">Subtasks of this task</h2>
+        <table th:unless="${task.subtasks.isEmpty}">
             <tr>
-                <th>Subtask</th>
+                <th>Title</th>
                 <th>Spent CO2e</th>
                 <th>Progress</th>
             </tr>
             <tr th:each="subtask : ${task.subtasks}">
-                <td><a th:href="@{'/subtask/' + ${subtask.subtaskID}}" th:text="${subtask.title}"></a></td>
+                <td>&#128279; <a th:href="@{'/subtask/' + ${subtask.subtaskID}}" th:text="${subtask.title}"></a></td>
                 <td th:text="${subtask.formatKgCO2e} + ' kg'"></td>
                 <td><progress max="100" th:value="${subtask.percentageDone}"></progress></td>
             </tr>

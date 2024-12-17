@@ -1,6 +1,6 @@
 CREATE TABLE user_profile(
     user_profile_id INT PRIMARY KEY AUTO_INCREMENT,
-    username CHAR(6) NOT NULL UNIQUE,
+    username CHAR(5) NOT NULL UNIQUE,
     encoded_password CHAR(60) NOT NULL,
     darkmode BOOLEAN NOT NULL
 );

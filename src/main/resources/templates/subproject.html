@@ -22,16 +22,17 @@
         <a th:href="@{'/subproject/' + ${subproject.subprojectID} + '/delete'}">
             <button>Delete this subproject</button>
         </a>
-        <h2>Tasks of this subproject</h2>
-        <table>
+        <p th:if="${subproject.tasks.isEmpty}">No tasks yet.</p>
+        <h2 th:unless="${subproject.tasks.isEmpty}">Tasks of this subproject</h2>
+        <table th:unless="${subproject.tasks.isEmpty}">
             <tr>
-                <th>Task</th>
+                <th>Title</th>
                 <th>Spent CO2e</th>
                 <th colspan="2">Deadline</th>
                 <th>Progress</th>
             </tr>
             <tr th:each="task : ${subproject.tasks}">
-                <td><a th:href="@{'/task/' + ${task.taskID}}" th:text="${task.title}"></a></td>
+                <td>&#128279; <a th:href="@{'/task/' + ${task.taskID}}" th:text="${task.title}"></a></td>
                 <td th:text="${task.formatKgCO2e} + ' kg'"></td>
                 <td th:text="${passed} ? 'Passed' : ${task.date}"></td>
                 <td th:text="${passed} ? '' : ${task.time}"></td>

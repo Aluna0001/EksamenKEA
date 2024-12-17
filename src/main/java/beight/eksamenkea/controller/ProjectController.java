@@ -1,6 +1,5 @@
 package beight.eksamenkea.controller;
 
-import beight.eksamenkea.model.Task;
 import beight.eksamenkea.model.UserProfile;
 import beight.eksamenkea.service.ProjectService;
 import jakarta.servlet.http.HttpServletRequest;
