@@ -1,28 +1,27 @@
 <!DOCTYPE html>
-<html lang="da" xmlns:th="http://thymeleaf.org">
+<html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="/main.css">
-    <title>Rediger Subtask</title>
+    <link rel="stylesheet" href="/css">
+    <title th:text="(${add} ? 'Add ' : 'Replace ') + (${estimated} ? 'estimated' : 'spent') + ' time'"></title>
 </head>
 <body>
-
-<h1>Rediger Subtask</h1>
-<form th:action="@{'/task/' + ${taskID} + '/update-subtask/' + ${subtaskID}}" method="post">
-    <label>Title: <input name="title" autofocus></label><br>
-    <label>Estimated time: <input name="estimated_time_hours" type="number"> hr
-        <input name="estimated_time_minutes" type="number"> min</label>
-    <button type="submit">Gem</button>
-</form>
-<hr>
-<a th:href="@{'/task/' + ${taskID}}">
-    <button>Fortryd</button>
-</a>
-<hr>
-<form th:action="@{'/task/' + ${taskID} + '/delete-subtask/' + ${subtaskID}}" method="post">
-    <label>Bekræft sletning: <input type="checkbox" name="confirm"></label><br>
-    <button type="submit">Slet task</button>
-</form>
-
+<th:block th:replace="~{darkmode :: base}">
+    <th:block th:fragment="content">
+        <h1 th:text="(${add} ? 'Add ' : 'Replace ') + (${estimated} ? 'estimated' : 'spent') + ' time ' + (${add} ? 'to ' : 'of ') + ${subtask.title}"></h1>
+        <p th:unless="${add}" th:text="'Old time: ' + (${estimated} ? ${subtask.formatEstimatedHours} : ${subtask.formatSpentHours}) + ' hours'"></p>
+        <form action="/time-changed" method="post">
+            <input type="hidden" name="id" th:value="${subtask.subtaskID}">
+            <input type="hidden" name="estimated" th:value="${estimated}">
+            <input type="hidden" name="add" th:value="${add}">
+            <label th:if="${add}">Add time: <input name="hours" type="number" min="0" required> hours <input name="minutes" type="number" min="0" max="59" required> minutes</label>
+            <label th:unless="${add}">New time: <input name="hours" type="number" min="0" required> hours <input name="minutes" type="number" min="0" max="59" required> minutes</label>
+            <button type="submit">Save</button>
+        </form>
+        <a th:href="@{'/subtask/' + ${subtask.subtaskID}}">
+            <button>Cancel</button>
+        </a>
+    </th:block>
+</th:block>
 </body>
 </html>

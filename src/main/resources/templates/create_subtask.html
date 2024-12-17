@@ -1,20 +1,24 @@
 <!DOCTYPE html>
-<html lang="da" xmlns:th="http://thymeleaf.org">
+<html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <link rel="stylesheet" href="/main.css">
-  <title>Create sub-task</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css">
+    <title>Create subtask</title>
 </head>
 <body>
-  <h1>New sub-task</h1>
-  <form action="/subtask-created" method="post">
-    <input type="hidden" name="id" th:value="${taskID}">
-    <label>Title: <input name="title" autofocus></label><br>
-    <label>Estimated time: <input name="estimated_time_hours" type="number"> hr
-      <input name="estimated_time_minutes" type="number"> min</label>
-    <button type="submit">Save</button>
-  </form>
-  <hr>
-  <a href="/task"><button>Cancel</button></a>
+<th:block th:replace="~{darkmode :: base}">
+    <th:block th:fragment="content">
+        <h1>Create subtask</h1>
+        <form action="/subtask-created" method="post">
+            <input type="hidden" name="id" th:value="${taskID}">
+            <label>Title: <input name="title" required></label><br>
+            <label>Estimated time: <input name="hours" type="number" min="0" required> hours <input name="minutes" type="number" min="0" max="59" required> minutes</label>
+            <button type="submit">Save</button>
+        </form>
+        <a href="/task">
+            <button>Cancel</button>
+        </a>
+    </th:block>
+</th:block>
 </body>
 </html>

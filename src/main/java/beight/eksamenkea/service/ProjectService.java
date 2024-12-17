@@ -1,20 +1,34 @@
 package beight.eksamenkea.service;
 
-import beight.eksamenkea.model.Project;
-import beight.eksamenkea.model.Subproject;
-import beight.eksamenkea.model.Task;
-import beight.eksamenkea.model.Subtask;
+import beight.eksamenkea.model.*;
 import beight.eksamenkea.repository.ProjectRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public ProjectService(ProjectRepository projectRepository) {
         this.projectRepository = projectRepository;
+        this.passwordEncoder = new BCryptPasswordEncoder();
+    }
+
+    public boolean login(String username, String password) throws EmptyResultDataAccessException {
+        return passwordEncoder.matches(password, projectRepository.readPassword(username));
+    }
+
+    public UserProfile readUserProfile(String username) {
+        return projectRepository.readUserProfile(username);
+    }
+
+    public List<Project> getAllProjects() {
+        return projectRepository.readAllProjects();
     }
 
     public Project getProject(int projectID) {
@@ -25,6 +39,10 @@ public class ProjectService {
         return projectRepository.readSubproject(subprojectID);
     }
 
+    public boolean createProject(String title) {
+        return projectRepository.createProject(title);
+    }
+
     public boolean createSubproject(int projectID, String title) {
         return projectRepository.createSubproject(projectID, title);
     }
@@ -33,28 +51,20 @@ public class ProjectService {
         return projectRepository.createTask(subprojectID, title, deadline);
     }
 
-    public Task getTask(int task_id){
+    public Task getTask(int task_id) {
         return projectRepository.readTask(task_id);
     }
 
-    public boolean updateTask(int taskID, String title, LocalDateTime deadline) {
-        return projectRepository.updateTask(taskID,title,deadline);
+    public boolean updateDeadline(int taskID, LocalDateTime deadline) {
+        return projectRepository.updateDeadline(taskID, deadline);
     }
 
-    public boolean updateSubTask(int taskID, String title, float estimatedHours) {
-        return projectRepository.updateSubTask(taskID,title,estimatedHours);
-    }
-
-    public boolean createSubTask(int taskID, String title, int estimated_time_hours, int estimated_time_minutes) {
-        float estimatedHours = (estimated_time_hours+(estimated_time_minutes/60f));
+    public boolean createSubTask(int taskID,
+                                 String title,
+                                 int hours,
+                                 int minutes) {
+        float estimatedHours = hours + (minutes / 60f);
         return projectRepository.createSubtask(taskID, title, estimatedHours);
-    }
-
-    public boolean deleteTask(int taskID, String confirm) {
-        if(confirm.equals("on")){
-            return projectRepository.deleteTask(taskID);
-        }
-        return false;
     }
 
     public String getTitle(String type, int id) {
@@ -70,19 +80,40 @@ public class ProjectService {
         return false;
     }
 
-    public Subproject editSubProject(String subprojectName, String subprojectDescription, float subprojectEstimatedTime) {
-        return projectRepository.editSubProject(subprojectName, subprojectDescription, subprojectEstimatedTime);
-    }
-
     public Subtask getSubtask(int subtaskId) {
         return projectRepository.readSubtask(subtaskId);
     }
 
-    public boolean deleteSubTask(int subtaskID, String confirm) {
-        if(confirm.equals("on")){
-            return projectRepository.deleteSubTask(subtaskID);
+    public void toggleDarkMode(UserProfile userProfile, boolean switchToDarkMode) {
+        if (projectRepository.toggleDarkMode(userProfile.getUsername(), switchToDarkMode)) {
+            userProfile.toggleDarkMode(switchToDarkMode);
         }
-        return false;
+    }
+
+    public boolean updateHours(int id, int hours, int minutes, boolean estimated, boolean add) {
+        float hoursDecimal = hours + (minutes / 60f);
+        if (estimated && add) return projectRepository.addEstimatedHours(id, hoursDecimal);
+        if (estimated) return projectRepository.updateEstimatedHours(id, hoursDecimal);
+        if (add) return projectRepository.addSpentHours(id, hoursDecimal);
+        return projectRepository.updateSpentHours(id, hoursDecimal);
+    }
+
+    public boolean updateCO2e(int id, float CO2e, boolean add) {
+        if (add) return projectRepository.addCO2e(id, CO2e);
+        return projectRepository.updateCO2e(id,CO2e);
+    }
+
+    public String constructReturnUrl(String type, int id) {
+        String superType = switch (type) {
+            case "subtask" -> "task";
+            case "task" -> "subproject";
+            case "subproject" -> "project";
+            default -> "";
+        };
+        if (superType.isBlank()) return "/portfolio";
+        return "/" + superType + "/" + projectRepository.readSuperID(id, type, superType);
     }
 
 }
+
+

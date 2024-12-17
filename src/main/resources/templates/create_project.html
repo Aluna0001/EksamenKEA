@@ -3,22 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/css">
-    <title>Create subproject</title>
+    <title>Create project</title>
 </head>
 <body>
 <th:block th:replace="~{darkmode :: base}">
-
     <th:block th:fragment="content">
-
-        <h1>Create subproject</h1>
-        <form action="/subproject-created" method="post">
-            <input type="hidden" name="id" th:value="${projectID}">
+        <h1>Create project</h1>
+        <form action="/project-created" method="post">
             <label>Title: <input name="title" required></label>
             <button type="submit">Save</button>
         </form>
-        <a th:href="@{'/project/' + ${projectID}}">
-            <button>Cancel</button>
-        </a>
+    <a href="/portfolio"><button>Cancel</button></a>
     </th:block>
 </th:block>
 </body>

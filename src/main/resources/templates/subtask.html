@@ -1,17 +1,50 @@
 <!DOCTYPE html>
-<html lang="da" xmlns:th="http://thymeleaf.org">
+<html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="/main.css">
-    <title>Sub-task</title>
+    <link rel="stylesheet" href="/css">
+    <title>Subtask</title>
 </head>
 <body>
-    <h1 th:text="${subtask.title}"></h1>
-    <h2>Subtask</h2>
-    <p th:text="'Estimated time: ' + ${subtask.estimatedHours} + ' hours.'"></p>
-    <a th:href="@{'/task/' + ${subtask.taskID}}"><button>Return to task</button></a>
-    <a th:href="@{'/task/' + ${subtask.taskID} + '/update-subtask/' + ${subtask.subtaskID}}">
-        <button>Update Subtask</button>
-    </a>
+<th:block th:replace="~{darkmode :: base}">
+    <th:block th:fragment="content">
+        <h1 th:text="${subtask.title}"></h1>
+        <table>
+            <tr>
+                <td>Subtask progress</td>
+                <td colspan="3">
+                    <progress max="100" th:value="${subtask.percentageDone}"></progress>
+                </td>
+            </tr>
+            <tr>
+                <td>Preliminary estimated time</td>
+                <td th:text="${subtask.formatEstimatedHours} + ' hours'"></td>
+                <td class="fit"><a th:href="@{'/subtask/' + ${subtask.subtaskID} + '/add-estimated-time'}"><button class="fit">Add</button></a></td>
+                <td class="fit"><a th:href="@{'/subtask/' + ${subtask.subtaskID} + '/replace-estimated-time'}"><button class="fit">Replace</button></a></td>
+            </tr>
+            <tr>
+                <td>Spent time</td>
+                <td th:text="${subtask.formatSpentHours} + ' hours'"></td>
+                <td class="fit"><a th:href="@{'/subtask/' + ${subtask.subtaskID} + '/add-spent-time'}"><button class="fit">Add</button></a></td>
+                <td class="fit"><a th:href="@{'/subtask/' + ${subtask.subtaskID} + '/replace-spent-time'}"><button class="fit">Replace</button></a></td>
+            </tr>
+            <tr>
+                <td>Spent CO2e</td>
+                <td th:text="${subtask.formatKgCO2e} + ' kg'"></td>
+                <td class="fit"><a th:href="@{'/subtask/' + ${subtask.subtaskID} + '/add-co2e'}"><button class="fit">Add</button></a></td>
+                <td class="fit"><a th:href="@{'/subtask/' + ${subtask.subtaskID} + '/replace-co2e'}"><button class="fit">Replace</button></a></td>
+            </tr>
+        </table>
+        <a th:href="@{'/subtask/' + ${subtask.subtaskID} + '/change-title'}">
+            <button>Edit title</button>
+        </a>
+        <a th:href="@{'/subtask/' + ${subtask.subtaskID} + '/delete'}">
+            <button>Delete this subtask</button>
+        </a>
+        <a th:href="@{'/task/' + ${subtask.taskID}}">
+            <button>Return to task</button>
+        </a>
+    </th:block>
+</th:block>
 </body>
 </html>

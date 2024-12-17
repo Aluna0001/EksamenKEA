@@ -1,25 +1,25 @@
 <!DOCTYPE html>
-<html lang="da" xmlns:th="http://thymeleaf.org">
+<html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="/main.css">
-    <title>Rediger task</title>
+    <link rel="stylesheet" href="/css">
+    <title>Move deadline</title>
 </head>
 <body>
-
-<h1>Rediger task</h1>
-<form th:action="@{'/subproject/' + ${subprojectID} + '/update-task/' + ${taskID}}" method="post">
-    <label>Title: <input name="title" autofocus></label><br>
-    <label>Deadline: <input name="deadline" type="datetime-local"></label>
-    <button type="submit">Gem</button>
-</form>
-<hr>
-<a th:href="@{'/subproject/' + ${subprojectID}}"><button>Fortryd</button></a>
-<hr>
-<form th:action="@{'/subproject/' + ${subprojectID} + '/delete-task/' + ${taskID}}" method="post">
-    <label>Bekræft sletning: <input type="checkbox" name="confirm"></label><br>
-    <button type="submit">Slet task</button>
-</form>
-
+<th:block th:replace="~{darkmode :: base}">
+    <th:block th:fragment="content">
+        <h1>Move deadline</h1>
+        <p th:text="'Task title: ' + ${task.title}"></p>
+        <p th:if="${task.passed}">The deadline has passed. Select a new one or cancel.</p>
+        <form action="/deadline-changed" method="post">
+            <input type="hidden" name="id" th:value="${task.taskID}">
+            <label>Deadline: <input name="deadline" type="datetime-local" th:min="${now}" th:value="${task.passed} ? ${now} : ${task.deadline}" required></label>
+            <button type="submit">Save</button>
+        </form>
+        <a th:href="@{'/task/' + ${task.taskID}}">
+            <button>Cancel</button>
+        </a>
+    </th:block>
+</th:block>
 </body>
 </html>

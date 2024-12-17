@@ -1,32 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css">
     <title>Task</title>
 </head>
 <body>
-    <h1>Task Details</h1>
-    <h2 th:text="${task.title}"></h2>
-    <p>Deadline: <span th:text="${task.deadline}"></span></p>
-
-    <h3>Subtasks</h3>
-    <ul>
-        <li th:each="subtask : ${task.subtasks}">
-            <a th:href="@{'/subtask/' + ${subtask.subtaskID}}" th:text="${subtask.title}"></a> -
-            <span th:text="${subtask.estimatedHours}"></span>
-        </li>
-    </ul>
-    <a th:href="@{'/task/' + ${task_id} + '/create-subtask'}">
-      <button>Create subtask</button>
-
-  </a>
-    <a th:href="@{'/subproject/' + ${task.subprojectID} + '/update-task/' + ${task.taskID}}">
-        <button>Update Task</button>
-    </a>
-
-    <a th:href="@{'/subproject/' + ${task.subprojectID}}">
-        <button>Return to Subproject</button>
-    </a>
-
+<th:block th:replace="~{darkmode :: base}">
+    <th:block th:fragment="content">
+        <h1 th:text="${task.title}"></h1>
+        <p th:if="${task.passed}">Deadline has passed.</p>
+        <table>
+            <tr><td>Deadline</td><td th:text="${task.date} + ' at ' + ${task.time}"></td></tr>
+            <tr><td>Task progress</td><td><progress max="100" th:value="${task.percentageDone}"></progress></td></tr>
+            <tr><td>Preliminary estimated time</td><td th:text="${task.formatEstimatedHours} + ' hours'"></td></tr>
+            <tr><td>Spent time</td><td th:text="${task.formatSpentHours} + ' hours'"></td></tr>
+            <tr><td>Spent CO2e</td><td th:text="${task.formatKgCO2e} + ' kg'"></td></tr>
+        </table>
+        <a th:href="@{'/task/' + ${task.taskID} + '/change-title'}">
+            <button>Edit title</button>
+        </a>
+        <a th:href="@{'/task/' + ${task.taskID} + '/change-deadline'}">
+            <button>Move deadline</button>
+        </a>
+        <a th:href="@{'/task/' + ${task.taskID} + '/delete'}">
+            <button>Delete this task</button>
+        </a>
+        <p th:if="${task.subtasks.isEmpty}">No subtasks yet.</p>
+        <h2 th:unless="${task.subtasks.isEmpty}">Subtasks of this task</h2>
+        <table th:unless="${task.subtasks.isEmpty}">
+            <tr>
+                <th>Title</th>
+                <th>Spent CO2e</th>
+                <th>Progress</th>
+            </tr>
+            <tr th:each="subtask : ${task.subtasks}">
+                <td>&#128279; <a th:href="@{'/subtask/' + ${subtask.subtaskID}}" th:text="${subtask.title}"></a></td>
+                <td th:text="${subtask.formatKgCO2e} + ' kg'"></td>
+                <td><progress max="100" th:value="${subtask.percentageDone}"></progress></td>
+            </tr>
+        </table>
+        <a th:href="@{'/task/' + ${task.taskID} + '/create-subtask'}">
+            <button>Create subtask</button>
+        </a>
+        <a th:href="@{'/subproject/' + ${task.subprojectID}}">
+            <button>Return to subproject</button>
+        </a>
+    </th:block>
+</th:block>
 </body>
 </html>

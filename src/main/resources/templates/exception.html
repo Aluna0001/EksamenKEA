@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Failure</title>
+</head>
+<body>
+
+<p th:text="${serverError} ? 'Server error.' : 'Page not found.'"></p>
+<a href="/portfolio"><button>Go to frontpage</button></a>
+
+<div hidden th:text="${name}"></div>
+<div hidden th:text="${message}"></div>
+<div hidden th:text="${stackTrace}"></div>
+
+</body>
+</html>

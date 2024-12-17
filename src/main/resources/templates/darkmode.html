@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css">
+</head>
+<body>
+<th:block th:fragment="base">
+    <main>
+        <div th:insert="~{::content}"></div>
+    </main>
+    <footer>
+        <form class="footer" action="/toggle-darkmode" method="post">
+            <input type="hidden" name="currentUrl" th:value="${currentUrl}">
+            <input type="hidden" name="switchToDarkMode" th:value="${not darkModeIsOn}">
+            <button type="submit" th:text="${darkModeIsOn} ? 'Switch to Light Mode' : 'Switch to Dark Mode'"></button>
+        </form>
+        <a href="/logout"><button>Log out</button></a>
+    </footer>
+</th:block>
+</body>
+</html>
+
+

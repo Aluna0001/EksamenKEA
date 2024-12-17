@@ -1,5 +1,6 @@
 package beight.eksamenkea.repository;
 
+import beight.eksamenkea.model.Project;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +20,11 @@ public class ProjectRepositoryTests {
 
     @Autowired
     private ProjectRepository projectRepository;
+
+    @Test
+    void readAllProjects() {
+        assertEquals(1, projectRepository.readAllProjects().size());
+    }
 
     @Test
     void readProject() {
@@ -45,6 +51,12 @@ public class ProjectRepositoryTests {
     }
 
     @Test
+    void createProject() {
+        assertThrows(DataIntegrityViolationException.class, () -> projectRepository.createProject(null));
+        assertTrue(projectRepository.createProject("test"));
+    }
+
+    @Test
     void createSubproject() {
         assertThrows(DataIntegrityViolationException.class, () -> projectRepository.createSubproject(1, null));
         assertThrows(DataIntegrityViolationException.class, () -> projectRepository.createSubproject(2, "test"));
@@ -53,7 +65,7 @@ public class ProjectRepositoryTests {
 
     @Test
     void createTask() {
-        assertThrows(DataIntegrityViolationException.class, () -> projectRepository.createTask(1,null, LocalDateTime.now()));
+        assertThrows(DataIntegrityViolationException.class, () -> projectRepository.createTask(1, null, LocalDateTime.now()));
         assertThrows(DataIntegrityViolationException.class, () -> projectRepository.createTask(2, "test", LocalDateTime.now()));
         assertTrue(projectRepository.createTask(1, "test", LocalDateTime.now()));
     }
@@ -84,8 +96,42 @@ public class ProjectRepositoryTests {
     @Test
     void delete() {
         assertFalse(projectRepository.delete("wrongHere", 1));
+
+        assertFalse(projectRepository.delete("project", 2));
         assertFalse(projectRepository.delete("subproject", 2));
+        assertFalse(projectRepository.delete("task", 2));
+        assertFalse(projectRepository.delete("subtask", 2));
+
+        assertTrue(projectRepository.delete("subtask", 1));
+        assertTrue(projectRepository.delete("task", 1));
         assertTrue(projectRepository.delete("subproject", 1));
+        assertTrue(projectRepository.delete("project", 1));
     }
+
+    @Test
+    void toggleDarkMode() {
+        assertTrue(projectRepository.toggleDarkMode("admin", true));
+        assertTrue(projectRepository.toggleDarkMode("admin", false));
+    }
+
+    @Test
+    void addSpentHours() {
+        assertTrue(projectRepository.addSpentHours(1, 2));
+    }
+
+    @Test
+    void updateSpentHours() {
+        assertTrue(projectRepository.updateSpentHours(1, 2));
+    }
+    @Test
+    void addCO2e() {
+        assertTrue(projectRepository.addCO2e(1, 2));
+    }
+
+    @Test
+    void updateCO2e() {
+        assertTrue(projectRepository.updateCO2e(1, 2));
+    }
+
 
 }

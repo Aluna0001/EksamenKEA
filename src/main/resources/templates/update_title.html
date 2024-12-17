@@ -2,18 +2,23 @@
 <html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css">
     <title>Change title</title>
 </head>
 <body>
-
-<h1 th:text="'Change ' + ${type} + ' title'"></h1>
-<form action="/title-changed" method="post">
-    <input type="hidden" name="type" th:value="${type}">
-    <input type="hidden" name="id" th:value="${id}">
-    <label>Title: <input name="title" th:value="${title}"></label><br>
-    <button type="submit">Save changes</button>
-</form>
-<a th:href="@{'/' + ${type} + '/' + ${id}}"><button>Cancel</button></a>
-
+<th:block th:replace="~{darkmode :: base}">
+    <th:block th:fragment="content">
+        <h1 th:text="'Change ' + ${type} + ' title'"></h1>
+        <form action="/title-changed" method="post">
+            <input type="hidden" name="type" th:value="${type}">
+            <input type="hidden" name="id" th:value="${id}">
+            <label>Title: <input name="title" th:value="${title}" required></label>
+            <button type="submit">Save changes</button>
+        </form>
+        <a th:href="@{'/' + ${type} + '/' + ${id}}">
+            <button>Cancel</button>
+        </a>
+    </th:block>
+</th:block>
 </body>
 </html>

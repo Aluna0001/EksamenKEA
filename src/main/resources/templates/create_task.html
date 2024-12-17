@@ -1,19 +1,24 @@
 <!DOCTYPE html>
-<html lang="da" xmlns:th="http://thymeleaf.org">
+<html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="/main.css">
-    <title>Create Task</title>
+    <link rel="stylesheet" href="/css">
+    <title>Create task</title>
 </head>
 <body>
-<h1>New Task</h1>
-<form action="/task-created" method="post">
-    <input type="hidden" name="id" th:value="${subprojectID}">
-    <label>Title: <input name="title" autofocus></label><br>
-    <label>Deadline: <input name="deadline" type="datetime-local"></label>
-    <button type="submit">Save</button>
-</form>
-<hr>
-<a th:href="@{'/subproject/' + ${subprojectID}}"><button>Cancel</button></a>
+<th:block th:replace="~{darkmode :: base}">
+    <th:block th:fragment="content">
+        <h1>Create task</h1>
+        <form action="/task-created" method="post">
+            <input type="hidden" name="id" th:value="${subprojectID}">
+            <label>Title: <input name="title" required></label><br>
+            <label>Deadline: <input name="deadline" type="datetime-local" th:min="${now}" th:value="${now}" required></label>
+            <button type="submit">Save</button>
+        </form>
+        <a th:href="@{'/subproject/' + ${subprojectID}}">
+            <button>Cancel</button>
+        </a>
+    </th:block>
+</th:block>
 </body>
 </html>

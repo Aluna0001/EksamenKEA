@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/darkmode.css">
+    <title>Login</title>
+</head>
+<body>
+
+<h1>Please log in</h1>
+<p th:text="${message}"></p>
+<form action="/login" method="post">
+    <label>Username: <input name="username" th:value="${username}" required></label><br>
+    <label>Password: <input type="password" name="password" required></label>
+    <button type="submit">Log in</button>
+</form>
+
+</body>
+</html>
